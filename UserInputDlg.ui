@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>UserInputDlg</class>
+ <widget class="QDialog" name="UserInputDlg">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>551</width>
+    <height>460</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>信息录入</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">#UserInputDlg 
+{
+	background:  rgba(32, 80, 96, 100);
+	border-image: url(:/images/images/userinput_bg.png);
+}
+
+#mainForm 
+{ 
+background-color:rgba(0, 0, 0, 80); 
+}
+
+QLabel { 
+color: white; 
+min-height: 30px;
+font-size: 20px;
+}
+QLineEdit { 
+color: balck; 
+min-width: 200px;
+min-height: 30px;
+font-size: 20px;
+}
+QSpinBox { 
+color: balck; 
+min-width: 200px;
+min-height: 30px;
+font-size: 20px;
+}
+QDateEdit { 
+color: balck; 
+min-width: 200px;
+min-height: 30px;
+font-size: 20px;
+}
+
+QPushButton{
+color : white;
+background-color: #27a9e3;
+border-width:0px;
+border-radius:10px;
+border-style: outset;
+min-height: 40px;
+font-size: 30px;
+}
+
+QPushButton:pressed{
+background-color: #66c011;
+padding-left:5px;
+padding-top:5px;
+}
+#infoLbl
+{ font-size: 40px; min-height: 60px;}</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <widget class="QLabel" name="infoLbl">
+     <property name="text">
+      <string>请输入用户信息</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QWidget" name="mainForm" native="true">
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <layout class="QFormLayout" name="formLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="m_usernameLbl">
+            <property name="text">
+             <string>姓名：</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="m_usernameEdit"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="m_ageLbl">
+            <property name="text">
+             <string>年龄：</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="m_ageEdit">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="value">
+             <number>15</number>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="m_telephoneLbl">
+            <property name="text">
+             <string>电话号码：</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="m_telephoneEdit"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="m_identitycardLbl">
+            <property name="text">
+             <string>身份证号：</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="m_identitycardEdit"/>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="m_groupnameLbl">
+            <property name="text">
+             <string>团队名称：</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QLineEdit" name="m_teamnameEdit">
+            <property name="text">
+             <string>新建队</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="m_groupnameLbl_2">
+            <property name="text">
+             <string>分组名称：</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QLineEdit" name="m_groupnameEdit">
+            <property name="text">
+             <string>1组</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
+           <widget class="QLabel" name="m_playtimeLbl">
+            <property name="text">
+             <string>体验时间：</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1">
+           <widget class="QDateEdit" name="m_playtimeEdit">
+            <property name="displayFormat">
+             <string>yyyy-MM-dd</string>
+            </property>
+            <property name="calendarPopup">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QPushButton" name="m_inportBtn">
+            <property name="text">
+             <string>录入</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>27</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

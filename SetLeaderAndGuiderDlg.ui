@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SetLeaderAndGuiderDlg</class>
+ <widget class="QDialog" name="SetLeaderAndGuiderDlg">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>348</width>
+    <height>196</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>设置导游</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">#SetLeaderAndGuiderDlg { background-color:
+qlineargradient(spread:reflect, x1:0.5, y1:0, x2:0, y2:0,
+stop:0 rgba(91, 204, 233, 100), stop:1 rgba(32, 80, 96,
+100)); }
+
+#mainForm { background-color:rgba(0, 0, 0, 80); }
+QPushButton{
+color : white;
+background-color: #27a9e3;
+border-width:0px;
+border-radius:10px;
+border-style: outset;
+min-height: 40px;
+font-size: 30px;
+}
+QPushButton:pressed{
+background-color: #66c011;
+padding-left:5px;
+padding-top:5px;
+}
+QLabel { 
+color: white; 
+min-height: 30px;
+font-size: 20px;
+}
+QComboBox { 
+color: balck; 
+min-width: 200px;
+min-height: 30px;
+font-size: 20px;
+}</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="m_infoLbl">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>设置导游</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QGridLayout" name="mainForm">
+     <item row="1" column="1">
+      <widget class="QPushButton" name="m_okBtn">
+       <property name="text">
+        <string>确定</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="m_guiderCb"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QPushButton" name="m_skipBtn">
+       <property name="text">
+        <string>跳过</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="m_guiderLbl">
+       <property name="text">
+        <string>请选择导游：</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

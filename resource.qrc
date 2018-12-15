@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>images/score_bg.png</file>
+        <file>images/userinput_bg.png</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file>icons/card.png</file>
+        <file>icons/delete.png</file>
+        <file>icons/edit.png</file>
+        <file>icons/leader.png</file>
+        <file>icons/name.png</file>
+        <file>icons/print.png</file>
+        <file>icons/score.png</file>
+        <file>icons/team.png</file>
+        <file>icons/telephone.png</file>
+        <file>icons/all.png</file>
+    </qresource>
+</RCC>

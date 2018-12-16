@@ -1,13 +1,12 @@
 #include "ShowTravlerScoreDlg.h"
 #include "ui_ShowTravlerScoreDlg.h"
 
-ShowTravlerScoreDlg::ShowTravlerScoreDlg(QString strResult, QWidget *parent) : QDialog(parent,Qt::WindowCloseButtonHint),
+ShowTravlerScoreDlg::ShowTravlerScoreDlg(QString strResult, QString current_data, QWidget *parent) : QDialog(parent,Qt::WindowCloseButtonHint),
     ui(new Ui::ShowTravlerScoreDlg)
 {
     ui->setupUi(this);
 
     setFixedSize(size());
-
 
     qDebug() << "ShowTravlerScoreDlg : strResult:"<< strResult;
     // json 解析
@@ -25,8 +24,8 @@ ShowTravlerScoreDlg::ShowTravlerScoreDlg(QString strResult, QWidget *parent) : Q
         {
             score_info.suggestion = "一起学习吧！";
         }
-
-        paiban(score_info);
+//        QString current_date =QDateTime::currentDateTime().toString("yyyy年MM月dd日");
+        paiban(score_info, current_data);
     }
 
 }
@@ -34,7 +33,7 @@ ShowTravlerScoreDlg::ShowTravlerScoreDlg(QString strResult, QWidget *parent) : Q
 
 //成绩json解析
 
-void ShowTravlerScoreDlg::paiban(score_info_st score_info)
+void ShowTravlerScoreDlg::paiban(score_info_st score_info, QString current_data)
 {
     QFont font_title(QFont("隶书", 30));
     QFont font_name(QFont("隶书", 20));
@@ -54,9 +53,9 @@ void ShowTravlerScoreDlg::paiban(score_info_st score_info)
 //    score_info.score_class = "优秀";
 //    score_info.suggestion = "太棒了，不要骄傲哦！";
 
-    QString current_date =QDateTime::currentDateTime().toString("yyyy年MM月dd日");
+
     QString p_name =  QString("%1同学：").arg(score_info.name);
-    QString p_score = QString("    恭喜您于%1完成了公共安全体验，总分：%2分，成绩%3，%4").arg(current_date).arg(score_info.finalscore).arg(score_info.score_class).arg(score_info.suggestion);
+    QString p_score = QString("    恭喜您于%1完成了公共安全体验，总分：%2分，成绩%3，%4").arg(current_data).arg(score_info.finalscore).arg(score_info.score_class).arg(score_info.suggestion);
     QString p_items = QString("    您此次未体验的项目有：");
 
     if(!score_info.remain_list.isEmpty())

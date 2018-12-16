@@ -256,7 +256,7 @@ bool MainWindow::historyResultParse(const QString& strResult, QString& rslt, QSt
                                         QJsonValue value = arrayObj.value("scoretime");
                                         if(value.isString())
                                         {
-                                            info.set_scoretime(value.toString());
+                                            info.set_scoretime(value.toString("yyyy年MM月dd日"));
 
                                             str = "ok";
                                         }
@@ -341,7 +341,8 @@ void MainWindow::onHistoryScoreClicked()
      HistoryInfo info = m_historyInfoModel.getItem(index.row());
 
      QString scorejson = info.scorejson();
+     QString current_data = info.scoretime();
 
-     ShowTravlerScoreDlg showScore(scorejson);
+     ShowTravlerScoreDlg showScore(scorejson, current_data);
      showScore.exec();
 }

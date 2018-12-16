@@ -270,7 +270,8 @@ void MainWindow::slot_getTravelerScoreResult(bool success, const QString& strRes
         return;
     }
 
-    ShowTravlerScoreDlg showScore(strResult);
+    QString current_date =QDateTime::currentDateTime().toString("yyyy年MM月dd日");
+    ShowTravlerScoreDlg showScore(strResult, current_date);
     showScore.exec();
 
 }

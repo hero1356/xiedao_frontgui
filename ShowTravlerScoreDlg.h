@@ -47,7 +47,7 @@ class ShowTravlerScoreDlg : public QDialog
     QString m_name;
 
 public:
-    explicit ShowTravlerScoreDlg(QString strResult, QWidget *parent = 0);
+    explicit ShowTravlerScoreDlg(QString strResult, QString current_data, QWidget *parent = 0);
     ~ShowTravlerScoreDlg();
     bool static travelerScoreParse(QString Json, score_info_st& score_info, QString& errmsg);
 
@@ -57,7 +57,7 @@ private slots:
 private:
     Ui::ShowTravlerScoreDlg *ui;
 
-    void paiban(score_info_st score_info);
+    void paiban(score_info_st score_info, QString current_data);
 };
 
 #endif // SHOWTRAVLERSCOREDLG_H

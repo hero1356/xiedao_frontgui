@@ -14,5 +14,15 @@
         <file>icons/team.png</file>
         <file>icons/telephone.png</file>
         <file>icons/all.png</file>
+        <file>icons/cardMagBtn.png</file>
+        <file>icons/cardMagBtnPressed.png</file>
+        <file>icons/importExcelBtn.png</file>
+        <file>icons/importExcelBtnPressed.png</file>
+        <file>icons/makeCardBtn.png</file>
+        <file>icons/makeCardBtnPressed.png</file>
+        <file>icons/queryHistoryBtn.png</file>
+        <file>icons/queryHistoryBtnPressed.png</file>
+        <file>icons/travelerQueryBtn.png</file>
+        <file>icons/travelerQueryBtnPressed.png</file>
     </qresource>
 </RCC>

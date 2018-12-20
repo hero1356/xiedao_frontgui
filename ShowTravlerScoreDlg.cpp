@@ -194,7 +194,7 @@ void ShowTravlerScoreDlg::on_m_printBtn_clicked()
 
         QString current_date =QDateTime::currentDateTime().toString("yyyyMMddhhmmss");
         QString path = QString("D:\\ScorePrint\\%1 - %2.pdf").arg(current_date).arg(m_name);
-        p->setOutputFileName(path);
+//        p->setOutputFileName(path);
 
         td->print(p);
     }

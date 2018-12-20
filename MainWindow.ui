@@ -158,7 +158,7 @@ font-size: 20px;
        <bool>true</bool>
       </property>
       <property name="currentIndex">
-       <number>4</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="importExcelWidget">
        <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -284,7 +284,7 @@ font-size: 20px;
            <widget class="QDateEdit" name="m_orderPlayTimeEdit">
             <property name="minimumSize">
              <size>
-              <width>200</width>
+              <width>150</width>
               <height>40</height>
              </size>
             </property>
@@ -331,7 +331,7 @@ font-size: 20px;
           <item>
            <widget class="QLabel" name="label_7">
             <property name="text">
-             <string>开始日期</string>
+             <string>日期</string>
             </property>
            </widget>
           </item>
@@ -339,7 +339,7 @@ font-size: 20px;
            <widget class="QDateEdit" name="m_orderBeginTimeEdit">
             <property name="minimumSize">
              <size>
-              <width>200</width>
+              <width>150</width>
               <height>40</height>
              </size>
             </property>
@@ -367,7 +367,7 @@ font-size: 20px;
           <item>
            <widget class="QLabel" name="label_8">
             <property name="text">
-             <string>结束日期</string>
+             <string>至</string>
             </property>
            </widget>
           </item>
@@ -375,7 +375,7 @@ font-size: 20px;
            <widget class="QDateEdit" name="m_orderEndTimeEdit">
             <property name="minimumSize">
              <size>
-              <width>200</width>
+              <width>150</width>
               <height>40</height>
              </size>
             </property>
@@ -407,7 +407,7 @@ font-size: 20px;
            <widget class="QPushButton" name="m_unsettledOrderQuerySectionBtn">
             <property name="minimumSize">
              <size>
-              <width>0</width>
+              <width>150</width>
               <height>40</height>
              </size>
             </property>
@@ -433,7 +433,7 @@ font-size: 20px;
            <widget class="QPushButton" name="m_unsettledOrderQueryAllBtn">
             <property name="minimumSize">
              <size>
-              <width>0</width>
+              <width>150</width>
               <height>40</height>
              </size>
             </property>
@@ -601,7 +601,7 @@ font-size: 20px;
            <widget class="QPushButton" name="m_queryInfoBtn1">
             <property name="minimumSize">
              <size>
-              <width>80</width>
+              <width>100</width>
               <height>40</height>
              </size>
             </property>
@@ -662,7 +662,7 @@ font-size: 20px;
            <widget class="QPushButton" name="m_queryInfoBtn2">
             <property name="minimumSize">
              <size>
-              <width>80</width>
+              <width>100</width>
               <height>40</height>
              </size>
             </property>
@@ -855,7 +855,7 @@ font-size: 20px;
                </property>
                <property name="minimumSize">
                 <size>
-                 <width>80</width>
+                 <width>100</width>
                  <height>40</height>
                 </size>
                </property>
@@ -948,7 +948,7 @@ font-size: 20px;
            <widget class="QPushButton" name="m_queryHistoryBtn1">
             <property name="minimumSize">
              <size>
-              <width>80</width>
+              <width>100</width>
               <height>40</height>
              </size>
             </property>
@@ -979,7 +979,7 @@ font-size: 20px;
              </size>
             </property>
             <property name="text">
-             <string>开始日期</string>
+             <string>日期：</string>
             </property>
            </widget>
           </item>
@@ -1014,7 +1014,7 @@ font-size: 20px;
              </size>
             </property>
             <property name="text">
-             <string>结束日期</string>
+             <string>至</string>
             </property>
            </widget>
           </item>
@@ -1050,7 +1050,7 @@ font-size: 20px;
            <widget class="QPushButton" name="m_queryHistoryaBtn2">
             <property name="minimumSize">
              <size>
-              <width>80</width>
+              <width>100</width>
               <height>40</height>
              </size>
             </property>

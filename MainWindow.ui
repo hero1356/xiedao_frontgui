@@ -232,7 +232,7 @@ font-size: 20px;
        <bool>true</bool>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="importExcelWidget">
        <layout class="QVBoxLayout" name="verticalLayout_3">

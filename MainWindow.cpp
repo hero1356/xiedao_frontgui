@@ -58,6 +58,8 @@ void MainWindow::sysInit()
     ui->m_unsettledOrderQueryBtn->setVisible(false);
     ui->m_orderPlayTimeEdit->setVisible(false);
     ui->m_orderPlayTimeLbl->setVisible(false);
+
+
 }
 
 void MainWindow::statusBarInit()
@@ -239,7 +241,24 @@ MainWindow::~MainWindow()
 
 
 
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    if(event->key() == Qt::Key_Return)
+    {
+//        qDebug() << "Return pressed!";
+        if( ui->stackedWidget->currentIndex() == index_query )
+        {
+            on_m_queryInfoBtn1_clicked();
+        }
 
+        if( ui->stackedWidget->currentIndex() == index_cardManage )
+        {
+            on_m_cardQueryBtn_clicked();
+        }
 
-
-
+        if( ui->stackedWidget->currentIndex() == index_history )
+        {
+            on_m_queryHistoryBtn1_clicked();
+        }
+    }
+}

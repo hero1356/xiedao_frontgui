@@ -60,30 +60,30 @@ void MainWindow::showInformationMessage(QString message)
 // 2.信息导入
 void MainWindow::on_m_inportExcelBtn_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(0);
+    ui->stackedWidget->setCurrentIndex(index_importExcel);
 }
 
 // 2.批量制卡
 void MainWindow::on_m_makeCardBtn_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(1);
+    ui->stackedWidget->setCurrentIndex(index_makeCard);
 }
 
 //3.游客查询
 void MainWindow::on_m_travelerQueryBtn_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(2);
+    ui->stackedWidget->setCurrentIndex(index_query);
 }
 
 //4.卡片管理
 void MainWindow::on_m_cardMagBtn_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(3);
+    ui->stackedWidget->setCurrentIndex(index_cardManage);
 }
 //5.历史查询
 void MainWindow::on_m_queryHistoryBtn_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(4);
+    ui->stackedWidget->setCurrentIndex(index_history);
 }
 
 
@@ -98,19 +98,19 @@ void MainWindow::on_stackedWidget_currentChanged(int index)
     ui->m_queryHistoryBtn->setProperty("switchpage", false);
 
     switch (index) {
-    case 0:
+    case index_importExcel:
         ui->m_inportExcelBtn->setProperty("switchpage", true);
         break;
-    case 1:
+    case index_makeCard:
         ui->m_makeCardBtn->setProperty("switchpage", true);
         break;
-    case 2:
+    case index_query:
         ui->m_travelerQueryBtn->setProperty("switchpage", true);
         break;
-    case 3:
+    case index_cardManage:
         ui->m_cardMagBtn->setProperty("switchpage", true);
         break;
-    case 4:
+    case index_history:
         ui->m_queryHistoryBtn->setProperty("switchpage", true);
         break;
     default:

@@ -12,6 +12,7 @@
 #include <QUuid>
 #include <QListWidget>
 #include <QPointer>
+#include <QKeyEvent>
 #include "AppConfig.h"
 #include "AddCardDlg.h"
 #include "OpenSerialDlg.h"
@@ -29,6 +30,12 @@
 #include "ShowTravlerScoreDlg.h"
 #include "UserInputDlg.h"
 #include "HistoryInfoModel.h"
+
+#define index_importExcel  0
+#define index_makeCard  1
+#define index_query  2
+#define index_cardManage  3
+#define index_history  4
 
 namespace Ui {
 class MainWindow;
@@ -99,6 +106,9 @@ class MainWindow : public QMainWindow
     QMap<QString, QList<TravlerInfo>> m_traverInfoMap;
     void makeTravlerInfoListWidget(QList<TravlerInfo> list);
     void clearTravlerInfoModel();
+
+    QList<TravlerInfo> m_backCardList;
+    void batBackCard(QList<TravlerInfo> &list);
 
     //历史查询相关
     QMenu m_historyInfoMenu;
@@ -189,6 +199,7 @@ private slots:
 
     void on_stackedWidget_currentChanged(int index);
 
+
 protected slots:
 
     //串口相关槽函数
@@ -256,7 +267,8 @@ private:
     void setTip(QString msg);
     QTimer m_tipTimer;
 
-
+protected:
+    void keyPressEvent(QKeyEvent *event);
 signals:
     void signal_sendCardID(unsigned int cardID);
     void signal_setGuider(bool success);

@@ -276,120 +276,6 @@ void MainWindow::slot_getTravelerScoreResult(bool success, const QString& strRes
 
 }
 
-//退卡结果
-void MainWindow::slot_travelerBackCardResult(bool success, const QString& strResult)
-{
-    qDebug() << "slot_travelerBackCardResult:" << strResult;
-
-    if( !success )
-    {
-        setTip("请求失败！"+strResult);
-        showErrorMessage("请求失败！\n"+strResult);
-        return;
-    }
-
-    QString rslt, name,cardid;
-    bool ret = true;
-    QString str = "default";
-    QString buf = strResult;
-    QByteArray data = buf.toUtf8();
-
-    QJsonParseError jsonError;//Qt5新类
-    QJsonDocument json = QJsonDocument::fromJson(data, &jsonError);//Qt5新类
-    if (jsonError.error == QJsonParseError::NoError)
-    {
-        if (json.isObject())
-        {
-            QJsonObject rootObj = json.object();
-            //是否含有key  rslt
-            if(rootObj.contains("rslt"))
-            {
-                QJsonValue value = rootObj.value("rslt");
-                //判断是否是string类型
-                if (value.isString())
-                {
-                    rslt = value.toString();
-                    str = "ok";
-                }
-            }
-            //是否含有key  name
-            if(rootObj.contains("name"))
-            {
-                QJsonValue value = rootObj.value("name");
-                //判断是否是string类型
-                if (value.isString())
-                {
-                    name = value.toString();
-                    str = "ok";
-                }
-            }
-            //是否含有key  cardid
-            if(rootObj.contains("cardid"))
-            {
-                QJsonValue value = rootObj.value("cardid");
-                //判断是否是string类型
-                if (value.isString())
-                {
-                    cardid = value.toString();
-                    str = "ok";
-                }
-            }
-
-        }else{
-            str = "json is not object";
-            ret = false;
-        }
-    }
-    qDebug() << str;
-    if(rslt == "ok")
-    {
-        setTip(name+"退卡成功！");
-
-        //从model中删除该行数据
-        for(int i=0; i<m_traverInfoModel.count(); i++)
-        {
-            if(m_traverInfoModel.getItem(i).cardid() == cardid)
-            {
-                m_traverInfoModel.remove(i);
-                break;
-            }
-        }
-
-        //从m_traverInfoMap中移除
-        QStringList keys = m_traverInfoMap.keys();
-        if(keys.isEmpty())
-            return;
-        for(int i=0; i< keys.count(); i++)
-        {
-            QList<TravlerInfo> infoList = m_traverInfoMap.value(keys[i]);
-
-            for(int j=0; j<infoList.count(); j++)
-            {
-                if(infoList[j].cardid() == cardid)
-                {
-                    infoList.removeAt(j);
-                    m_traverInfoMap.insert(keys[i],infoList);
-                    if(infoList.isEmpty())
-                    {
-                        m_traverInfoMap.remove(keys[i]);
-                    }
-                    break;
-                }
-            }
-            if(infoList.isEmpty())
-            {
-                QListWidgetItem *item = ui->m_travlerInfoListWidget->takeItem(i);
-
-                delete item;
-
-                m_traverInfoMap.remove(keys[i]);
-            }
-        }
-
-        showInformationMessage(name+"退卡成功！");
-
-    }
-}
 
 //右键菜单————设为队长
 void MainWindow::onTravelerSetCaptainClicked()
@@ -720,17 +606,26 @@ void MainWindow::onTravelerListWidgetBatBackcardClicked()
 
     if(r == QMessageBox::No) return;
 
+    //获取右键位置的 index
+    QModelIndex index = ui->m_travlerInfoView->currentIndex();
 
-    qDebug() << "current row" << ui->m_travlerInfoListWidget->currentRow();
-
-    if(ui->m_travlerInfoListWidget->currentRow() == -1)
+    qDebug() << "Current index:" << index.row();
+    if(index.row() == -1)
     {
-        showErrorMessage("无效操作！");
+        showErrorMessage("无效操作");
         return;
     }
 
-    QString key = ui->m_travlerInfoListWidget->currentItem()->text();
+    //获取所在行的信息
+    TravlerInfo info(m_traverInfoModel.getItem(index.row()));
+
+    //获取key
+    QString key = info.teamname() + " - " + info.groupname();
+
+    //获取key对应的list
     QList<TravlerInfo> list = m_traverInfoMap.value(key);
+
+    m_backCardList = m_traverInfoMap.value(key);
 
     if(list.isEmpty())
     {
@@ -738,16 +633,161 @@ void MainWindow::onTravelerListWidgetBatBackcardClicked()
         return;
     }
 
-    for(int i=0; i<list.count(); i++)
+    batBackCard(m_backCardList);
+
+
+}
+
+void MainWindow::batBackCard(QList<TravlerInfo>& list)
+{
+    if(!list.isEmpty())
     {
         //获取所在行的信息
-         TravlerInfo info(m_traverInfoModel.getItem(i));
+         TravlerInfo info = list[0];
          Http* pHttpFun = new Http();
          QString strUrl = dest_ip_and_port+"/user/backcard?cardid="+info.cardid()+"&comid=255";
          connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
                  this,SLOT(slot_travelerBackCardResult(bool,const QString&)));
          qDebug() <<"Send http: "<< strUrl;
          pHttpFun->get(strUrl);
+    }
+    else
+    {
+        setTip("全部退卡完毕！");
+    }
+}
+
+//退卡结果
+void MainWindow::slot_travelerBackCardResult(bool success, const QString& strResult)
+{
+    qDebug() << "slot_travelerBackCardResult:" << strResult;
+
+    if( !success )
+    {
+        setTip("请求失败！"+strResult);
+        showErrorMessage("请求失败！\n"+strResult);
+        return;
+    }
+
+    QString rslt, name,cardid;
+    bool ret = true;
+    QString str = "default";
+    QString buf = strResult;
+    QByteArray data = buf.toUtf8();
+
+    QJsonParseError jsonError;//Qt5新类
+    QJsonDocument json = QJsonDocument::fromJson(data, &jsonError);//Qt5新类
+    if (jsonError.error == QJsonParseError::NoError)
+    {
+        if (json.isObject())
+        {
+            QJsonObject rootObj = json.object();
+            //是否含有key  rslt
+            if(rootObj.contains("rslt"))
+            {
+                QJsonValue value = rootObj.value("rslt");
+                //判断是否是string类型
+                if (value.isString())
+                {
+                    rslt = value.toString();
+                    str = "ok";
+                }
+            }
+            //是否含有key  name
+            if(rootObj.contains("name"))
+            {
+                QJsonValue value = rootObj.value("name");
+                //判断是否是string类型
+                if (value.isString())
+                {
+                    name = value.toString();
+                    str = "ok";
+                }
+            }
+            //是否含有key  cardid
+            if(rootObj.contains("cardid"))
+            {
+                QJsonValue value = rootObj.value("cardid");
+                //判断是否是string类型
+                if (value.isString())
+                {
+                    cardid = value.toString();
+                    str = "ok";
+                }
+            }
+
+        }else{
+            str = "json is not object";
+            ret = false;
+        }
+    }
+    qDebug() << str;
+    if(rslt == "ok")
+    {
+        setTip(name+"退卡成功！");
+
+        //从model中删除该行数据
+        for(int i=0; i<m_traverInfoModel.count(); i++)
+        {
+            if(m_traverInfoModel.getItem(i).cardid() == cardid)
+            {
+                m_traverInfoModel.remove(i);
+                break;
+            }
+        }
+
+
+        //从m_traverInfoMap中移除
+        QStringList keys = m_traverInfoMap.keys();
+        if(keys.isEmpty())
+            return;
+        for(int i=0; i< keys.count(); i++)
+        {
+            QList<TravlerInfo> infoList = m_traverInfoMap.value(keys[i]);
+
+            for(int j=0; j<infoList.count(); j++)
+            {
+                if(infoList[j].cardid() == cardid)
+                {
+                    infoList.removeAt(j);
+                    m_traverInfoMap.insert(keys[i],infoList);
+                    if(infoList.isEmpty())
+                    {
+                        m_traverInfoMap.remove(keys[i]);
+                    }
+                    break;
+                }
+            }
+            if(infoList.isEmpty())
+            {
+                QListWidgetItem *item = ui->m_travlerInfoListWidget->takeItem(i);
+
+                delete item;
+
+                m_traverInfoMap.remove(keys[i]);
+            }
+        }
+
+
+        //从m_backCardList中移除
+        if(!m_backCardList.isEmpty())
+        {
+            for(int i=0; i<m_backCardList.count(); i++)
+            {
+                if(m_backCardList[i].cardid() == cardid)
+                {
+                    m_backCardList.removeAt(i);
+                    break;
+                }
+            }
+            batBackCard(m_backCardList);
+        }
+
+        showInformationMessage(name+"退卡成功！");
+    }
+    else
+    {
+        showErrorMessage("退卡失败！");
     }
 }
 

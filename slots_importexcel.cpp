@@ -15,7 +15,7 @@
 
 /***********************************************
  *
- *              导入execl相关
+ *              import execl
  *
 ************************************************/
 void MainWindow::clearPersonInfoModel()
@@ -26,7 +26,7 @@ void MainWindow::clearPersonInfoModel()
     ui->m_personInfoView->setColumnWidth(4,200);
     ui->m_personInfoView->setColumnWidth(5,200);
 }
-//button slot: 打开Excel
+//button slot: open Excel
 void MainWindow::on_m_openExcelBtn_clicked()
 {
     clearPersonInfoModel();
@@ -36,7 +36,7 @@ void MainWindow::on_m_openExcelBtn_clicked()
     ui->m_excelPathEdit->setText(path);
 }
 
-//button slot: 取消导入订单
+//button slot: cancel import
 void MainWindow::on_m_importOrderCancelBtn_clicked()
 {
     // 清空模型与视图
@@ -45,12 +45,10 @@ void MainWindow::on_m_importOrderCancelBtn_clicked()
     ui->m_excelPathEdit->clear();
 }
 
-//button slot: 导入订单按钮
+//button slot: import order
 void MainWindow::on_m_importOrderBtn_clicked()
 {
     ui->m_importOrderBtn->setEnabled(false);
-    qDebug() << "ui->m_importOrderBtn->setEnabled(false);";
-
 
     // 2.获取所有人员的信息
     int row = m_personInfoModel.count();
@@ -68,8 +66,6 @@ void MainWindow::on_m_importOrderBtn_clicked()
     {
         infoList.append(m_personInfoModel.getItem(i));
     }
-
-//    PersonInfo info(m_personInfoModel.getItem(1));
 
     // 3.生成http post body
     QString postBody = makeHttpPostBody(infoList);

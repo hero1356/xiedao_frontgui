@@ -104,7 +104,7 @@ void MainWindow::on_m_beginMarkCardBatchBtn_clicked()
     if(!isSerialPortConnected())
     {
         showErrorMessage("串口未连接！请先连接串口...");
-        on_m_serialManageBtn_clicked();
+        serialOpen();
         return;
     }
     if( m_isStartMarkCard == false)

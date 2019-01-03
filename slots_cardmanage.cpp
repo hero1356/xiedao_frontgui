@@ -14,12 +14,12 @@
 
 /***********************************************
  *
- *              卡片管理相关
+ *              card management
  *
 ************************************************/
 
 
-//button slot: 查询卡片编号
+//button slot: cardsn query
 void MainWindow::on_m_cardQueryBtn_clicked()
 {
     QString cardSN = ui->m_cardSNInputEdit->text().trimmed();
@@ -32,7 +32,8 @@ void MainWindow::on_m_cardQueryBtn_clicked()
                 this,SLOT(slot_cardGetResult(bool,const QString&)));
         qDebug() <<"Send http: "<< strUrl;
         pHttpFun->get(strUrl);
-    }else
+    }
+    else
     {
         Http* pHttpFun = new Http();
         QString strUrl  = dest_ip_and_port+"/card/get?cardsn="+cardSN;
@@ -43,7 +44,7 @@ void MainWindow::on_m_cardQueryBtn_clicked()
     }
 }
 
-//button slot: 查询卡片ID
+//button slot: cardid query
 void MainWindow::on_m_cardIDQueryBtn_clicked()
 {
     QString cardID = ui->m_cardIDInputEdit->text().trimmed();
@@ -56,7 +57,8 @@ void MainWindow::on_m_cardIDQueryBtn_clicked()
                 this,SLOT(slot_cardGetResult(bool,const QString&)));
         qDebug() <<"Send http: "<< strUrl;
         pHttpFun->get(strUrl);
-    }else
+    }
+    else
     {
         Http* pHttpFun = new Http();
         QString strUrl = dest_ip_and_port+"/card/get?cardid="+cardID;
@@ -67,8 +69,7 @@ void MainWindow::on_m_cardIDQueryBtn_clicked()
     }
 }
 
-
-//button slot: 添加卡片
+//button slot: card add
 void MainWindow::on_m_cardAddBtn_clicked()
 {
     AddCardDlg dlg;
@@ -77,8 +78,7 @@ void MainWindow::on_m_cardAddBtn_clicked()
     dlg.exec();
 }
 
-
-//button slot: 右键编辑
+//button slot: card edit
 void MainWindow::onCardInfoMenuEditClicked()
 {
     qDebug() << "onCardInfoMenuEditClicked";
@@ -87,7 +87,6 @@ void MainWindow::onCardInfoMenuEditClicked()
     QModelIndex index = ui->m_cardInfoView->currentIndex();
     //获取 index 对应的数据
     QString ret = index.data(Qt::DisplayRole).toString();
-    qDebug() << "ret = " << ret;
 
     if(ret.isEmpty())
     {
@@ -98,7 +97,6 @@ void MainWindow::onCardInfoMenuEditClicked()
     CardInfo info(m_cardInfomodel.getItem(index.row()));
     //保存已经编辑的行
     m_modRow = index.row();
-
 
     QString strUrl;
     // 根据SN修改ID
@@ -114,7 +112,6 @@ void MainWindow::onCardInfoMenuEditClicked()
             newCardID = dlg.cardID();
             strUrl = dest_ip_and_port+"/card/mod?direction=sn2id&cardid="+newCardID+"&cardsn="+info.cardSN();
             Http* pHttpFun = new Http();
-        //    QString strUrl = "http://10.55.206.28:8687/card/del?cardid="+cardID;
             connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
                     this,SLOT(slot_cardModResult(bool,const QString&)));
             qDebug() <<"Send http: "<< strUrl;
@@ -149,7 +146,7 @@ void MainWindow::onCardInfoMenuEditClicked()
     }
 }
 
-//button slot: 右键删除
+//button slot: card delete
 void MainWindow::onCardInfoMenuDeleteClicked()
 {
     int r = showQueryMessage("你确定要删除选中的卡片吗？");
@@ -158,16 +155,11 @@ void MainWindow::onCardInfoMenuDeleteClicked()
 
     QModelIndex index = ui->m_cardInfoView->currentIndex();
     QString ret = index.data(Qt::DisplayRole).toString();
-    qDebug() << "ret = " <<ret;
     if(ret.isEmpty())
     {
         showErrorMessage("无效操作!");
         return;
     }
-
-    CardInfo info(m_model.getItem(index.row()));
-    QString cardID = info.cardID();
-    QString cardSN = info.cardSN();
 
     QString strUrl;
     if(ret.length() == 6)
@@ -189,7 +181,7 @@ void MainWindow::onCardInfoMenuDeleteClicked()
     removeList.append(index.row());
 }
 
-//button slot: 右键删除全部
+//button slot: card delete all
 void MainWindow::onCardInfoMenuDeleteAllClicked()
 {
     int r = showQueryMessage("你确定要删除所有的卡片吗？");
@@ -198,7 +190,6 @@ void MainWindow::onCardInfoMenuDeleteAllClicked()
 
     QModelIndex index = ui->m_cardInfoView->currentIndex();
     QString ret = index.data(Qt::DisplayRole).toString();
-    qDebug() << "ret = " <<ret;
     if(ret.isEmpty())
     {
         showErrorMessage("无效操作!");
@@ -219,7 +210,6 @@ void MainWindow::onCardInfoMenuDeleteAllClicked()
 //http slot: 查询卡片结果
 void MainWindow::slot_cardGetResult(bool success, const QString &strResult)
 {
-
     qDebug() <<"slot_cardGetResult: receive data:"<< strResult;
 
     if( !success )
@@ -305,38 +295,12 @@ void MainWindow::slot_cardGetResult(bool success, const QString &strResult)
     }
 }
 
-//http slot: 删除卡片结果
-void MainWindow::slot_cardDeleteResult(bool success, const QString& strResult)
+//http slot: 添加卡片成功
+void MainWindow::slot_cardAddSuccessed(QString cardID, QString cardSN)
 {
-    qDebug() << "slot_cardDeleteResult:"<<strResult;
-    if( !success )
-    {
-        setTip("请求失败！"+strResult);
-        showErrorMessage("请求失败！\n"+strResult);
-        return;
-    }
-
-    QString rslt;
-    QString reason;
-
-    if( jsonParse(strResult, rslt, reason))
-    {
-        //如果删除成功，则从m_cardInfomodel中移除
-        if( rslt == "success" )
-        {
-            for(int i=0; i<removeList.count(); i++)
-            {
-                m_cardInfomodel.remove(removeList[i]);
-            }
-            setTip("卡片删除成功！");
-            showInformationMessage("卡片删除成功！");
-        }
-        else if(rslt == "failed")
-        {
-            setTip("卡片删除失败！"+reason);
-            showErrorMessage("卡片删除失败！\n"+reason);
-        }
-    }
+    setTip("添加卡片成功！");
+    CardInfo info(cardID, cardSN);
+    m_cardInfomodel.add(info);
 }
 
 //http slot: 修改卡片结果
@@ -371,22 +335,38 @@ void MainWindow::slot_cardModResult(bool success, const QString &strResult)
     }
 }
 
-
-//http slot: 添加卡片成功数
-void MainWindow::slot_cardAddSuccessed(QString cardID, QString cardSN)
+//http slot: 删除卡片结果
+void MainWindow::slot_cardDeleteResult(bool success, const QString& strResult)
 {
-    setTip("添加卡片成功！");
-    CardInfo info(cardID,cardSN);
-    m_cardInfomodel.add(info);
+    qDebug() << "slot_cardDeleteResult:"<<strResult;
+    if( !success )
+    {
+        setTip("请求失败！"+strResult);
+        showErrorMessage("请求失败！\n"+strResult);
+        return;
+    }
+
+    QString rslt;
+    QString reason;
+
+    if( jsonParse(strResult, rslt, reason))
+    {
+        //如果删除成功，则从m_cardInfomodel中移除
+        if( rslt == "success" )
+        {
+            for(int i=0; i<removeList.count(); i++)
+            {
+                m_cardInfomodel.remove(removeList[i]);
+            }
+            setTip("卡片删除成功！");
+            showInformationMessage("卡片删除成功！");
+        }
+        else if(rslt == "failed")
+        {
+            setTip("卡片删除失败！"+reason);
+            showErrorMessage("卡片删除失败！\n"+reason);
+        }
+    }
 }
-
-
-//QString MainWindow::transCoding(const QString& source)
-//{
-//    QTextCodec* pCodec = QTextCodec::codecForName("gbk");
-//    if(!pCodec) return false;
-//    QString des = pCodec->toUnicode(source.toLocal8Bit());
-//    return des;
-//}
 
 

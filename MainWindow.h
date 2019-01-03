@@ -59,6 +59,7 @@ class MainWindow : public QMainWindow
 //串口
     QSerialPort* m_serialPort;
     bool m_isSerialPortConnected;
+    void serialOpen();
 
 // cardInfo 相关
     CardInfoModel m_model;
@@ -194,7 +195,7 @@ private slots:
     void on_m_queryHistoryaBtn2_clicked();
 //    void on_m_cardManageBtn_clicked();
     void on_m_queryHistoryBtn_clicked();
-    void on_m_serialManageBtn_clicked();
+//    void on_m_serialManageBtn_clicked();
     void on_m_cardMagBtn_clicked();
 
     void on_stackedWidget_currentChanged(int index);

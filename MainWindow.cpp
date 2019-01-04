@@ -26,7 +26,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     travlerInfoViewInit();
     queryHistoryViewInit();
 
-
 }
 
 // init the system param

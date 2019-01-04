@@ -2,6 +2,8 @@
     <qresource prefix="/images">
         <file>images/score_bg.png</file>
         <file>images/userinput_bg.png</file>
+        <file>images/login_bg.png</file>
+        <file>images/logo.png</file>
     </qresource>
     <qresource prefix="/icons">
         <file>icons/card.png</file>
@@ -24,5 +26,7 @@
         <file>icons/queryHistoryBtnPressed.png</file>
         <file>icons/travelerQueryBtn.png</file>
         <file>icons/travelerQueryBtnPressed.png</file>
+        <file>icons/restart_icon.png</file>
+        <file>icons/shutdown_icon.png</file>
     </qresource>
 </RCC>

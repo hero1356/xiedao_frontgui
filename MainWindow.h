@@ -30,6 +30,8 @@
 #include "ShowTravlerScoreDlg.h"
 #include "UserInputDlg.h"
 #include "HistoryInfoModel.h"
+#include "LoginDlg.h"
+
 
 #define index_importExcel  0
 #define index_makeCard  1
@@ -45,6 +47,8 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
+
+    LoginDlg login;
 
     QMap<QString, GroupInfo> m_groupCache;
     int currentIndex;

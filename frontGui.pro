@@ -54,10 +54,11 @@ SOURCES += main.cpp\
             TravlerInfo.cpp \
             TravlerInfoModel.cpp \
             ShowTravlerScoreDlg.cpp \
-    UserInputDlg.cpp \
-    slots_queryHistory.cpp \
-    HistoryInfo.cpp \
-    HistoryInfoModel.cpp
+            UserInputDlg.cpp \
+            slots_queryHistory.cpp \
+            HistoryInfo.cpp \
+            HistoryInfoModel.cpp \
+            LoginDlg.cpp
 
 HEADERS  += MainWindow.h \
             Http.h \
@@ -78,19 +79,22 @@ HEADERS  += MainWindow.h \
             TravlerInfo.h \
             TravlerInfoModel.h \
             ShowTravlerScoreDlg.h \
-    UserInputDlg.h \
-    HistoryInfo.h \
-    HistoryInfoModel.h
+            UserInputDlg.h \
+            HistoryInfo.h \
+            HistoryInfoModel.h \
+            LoginDlg.h
 
 FORMS    += MainWindow.ui \
             ModCardInfoDlg.ui \
             AddCardDlg.ui \
             SetLeaderAndGuiderDlg.ui \
             ShowTravlerScoreDlg.ui \
-    UserInputDlg.ui
+            UserInputDlg.ui \
+            LoginDlg.ui
 
 RC_ICONS = icon.ico
 
 RESOURCES += \
-    resource.qrc
+    resource.qrc \
+    res.qrc \
 

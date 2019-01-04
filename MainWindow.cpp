@@ -4,6 +4,7 @@
 #include <QDateTime>
 #include <QTimer>
 #include <QIcon>
+#include <QThread>
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
@@ -33,7 +34,9 @@ void MainWindow::sysInit()
 {
     //读取配置文件，设置IP和Port
     AppConfig config;
-    dest_ip_and_port = "http://"+config.ip()+":"+config.port();
+//    dest_ip_and_port = "http://"+config.ip()+":"+config.port();
+    dest_ip_and_port = "https://"+config.ip()+":"+config.port();
+
     qDebug() << "目标地址" <<dest_ip_and_port;
 
     //参数初始化
@@ -246,6 +249,8 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_Return)
     {
+        QThread::msleep(100);
+
 //        qDebug() << "Return pressed!";
         if( ui->stackedWidget->currentIndex() == index_query )
         {

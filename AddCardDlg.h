@@ -5,6 +5,8 @@
 #include "Http.h"
 #include "AppConfig.h"
 
+#define ENCRYPTION_TRANSMISSION 1
+
 namespace Ui {
 class AddCardDlg;
 }
@@ -14,7 +16,7 @@ class AddCardDlg : public QDialog
     Q_OBJECT
 
 public:
-    explicit AddCardDlg(QWidget *parent = 0);
+    explicit AddCardDlg(QString account, QString pwd, QWidget *parent = 0);
     ~AddCardDlg();
 
 private:
@@ -23,6 +25,11 @@ private:
     QString dest_ip_and_port;
     bool m_isAddCardSuccess;
     QString m_AddFailedReason;
+    QString currentOperator;
+    QString userPwd;
+
+    QString generateSign(QString input);
+    QString httpGetGenerateSign(QString input);
 
 public:
     bool isAddCardSuccedd()   {return m_isAddCardSuccess;}

@@ -28,6 +28,7 @@ void MainWindow::on_m_cardQueryBtn_clicked()
     {
         Http* pHttpFun = new Http();
         QString strUrl = dest_ip_and_port+"/card/get";
+        strUrl = httpGetGenerateSign(strUrl);
         connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
                 this,SLOT(slot_cardGetResult(bool,const QString&)));
         qDebug() <<"Send http: "<< strUrl;
@@ -37,6 +38,7 @@ void MainWindow::on_m_cardQueryBtn_clicked()
     {
         Http* pHttpFun = new Http();
         QString strUrl  = dest_ip_and_port+"/card/get?cardsn="+cardSN;
+        strUrl = httpGetGenerateSign(strUrl);
         connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
                 this,SLOT(slot_cardGetResult(bool,const QString&)));
         qDebug() <<"Send http: "<< strUrl;
@@ -53,6 +55,7 @@ void MainWindow::on_m_cardIDQueryBtn_clicked()
     {
         Http* pHttpFun = new Http();
         QString strUrl = dest_ip_and_port+"/card/get";
+        strUrl = httpGetGenerateSign(strUrl);
         connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
                 this,SLOT(slot_cardGetResult(bool,const QString&)));
         qDebug() <<"Send http: "<< strUrl;
@@ -62,6 +65,7 @@ void MainWindow::on_m_cardIDQueryBtn_clicked()
     {
         Http* pHttpFun = new Http();
         QString strUrl = dest_ip_and_port+"/card/get?cardid="+cardID;
+        strUrl = httpGetGenerateSign(strUrl);
         connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
                 this,SLOT(slot_cardGetResult(bool,const QString&)));
         qDebug() <<"Send http: "<< strUrl;
@@ -72,7 +76,7 @@ void MainWindow::on_m_cardIDQueryBtn_clicked()
 //button slot: card add
 void MainWindow::on_m_cardAddBtn_clicked()
 {
-    AddCardDlg dlg;
+    AddCardDlg dlg(currentOperator, userPwd);
     connect(&dlg,SIGNAL(signal_addCardSuccessed(QString,QString)),this,SLOT(slot_cardAddSuccessed(QString,QString)));
     connect(this,SIGNAL(signal_sendCardID(uint)),&dlg,SLOT(slot_receCardID(uint)));
     dlg.exec();
@@ -111,6 +115,7 @@ void MainWindow::onCardInfoMenuEditClicked()
         {
             newCardID = dlg.cardID();
             strUrl = dest_ip_and_port+"/card/mod?direction=sn2id&cardid="+newCardID+"&cardsn="+info.cardSN();
+            strUrl = httpGetGenerateSign(strUrl);
             Http* pHttpFun = new Http();
             connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
                     this,SLOT(slot_cardModResult(bool,const QString&)));
@@ -134,6 +139,7 @@ void MainWindow::onCardInfoMenuEditClicked()
             newCardSN = dlg.cardSN();            
             Http* pHttpFun = new Http();
             strUrl = dest_ip_and_port+"/card/mod?direction=id2sn&cardid="+info.cardID()+"&cardsn="+newCardSN;
+            strUrl = httpGetGenerateSign(strUrl);
             connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
                     this,SLOT(slot_cardModResult(bool,const QString&)));
             qDebug() <<"Send http: "<< strUrl;
@@ -165,10 +171,12 @@ void MainWindow::onCardInfoMenuDeleteClicked()
     if(ret.length() == 6)
     {
         strUrl = dest_ip_and_port+"/card/del?cardid="+ret;
+        strUrl = httpGetGenerateSign(strUrl);
     }
     else
     {
         strUrl = dest_ip_and_port+"/card/del?cardsn="+ret;
+        strUrl = httpGetGenerateSign(strUrl);
     }
 
     Http* pHttpFun = new Http();
@@ -197,6 +205,7 @@ void MainWindow::onCardInfoMenuDeleteAllClicked()
     }
 
     QString strUrl = dest_ip_and_port+"/card/del";
+    strUrl = httpGetGenerateSign(strUrl);
     Http* pHttpFun = new Http();
     connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
             this,SLOT(slot_cardDeleteResult(bool,const QString&)));

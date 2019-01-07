@@ -14,6 +14,59 @@
 
 /***********************************************
  *
+ *        encryption transmission
+ *
+************************************************/
+QString MainWindow::generateSign(QString input)
+{
+    QString ret;
+
+    ret = QCryptographicHash::hash(input.toLatin1(),QCryptographicHash::Md5).toHex();
+
+    return ret;
+}
+
+QString MainWindow::httpGetGenerateSign(QString input)
+{
+    if( !ENCRYPTION_TRANSMISSION )
+        return input;
+
+    QString ret = input;
+
+    int pos = input.indexOf('?');
+
+    if(pos == -1)
+    {
+        QString sign = generateSign(userPwd);
+
+        ret += QString("?keyid="+currentOperator+",sign:"+sign);
+
+    }else{
+
+        QString sign = generateSign(QString(ret.mid(pos+1)+userPwd));
+
+        ret += QString("&keyid="+currentOperator+",sign:"+sign);
+    }
+
+    return ret;
+}
+
+QString MainWindow::httpPostGenerateSign(QString input)
+{
+    if( !ENCRYPTION_TRANSMISSION )
+        return input;
+
+    QString ret = "{data:"+input;
+
+    QString sign = generateSign(QString(input+userPwd));
+
+    ret += QString(",keyid:"+currentOperator+",sign:"+sign+"}");
+
+    return ret;
+}
+
+/***********************************************
+ *
  *        generate Messageboxs
  *
 ************************************************/
@@ -201,6 +254,8 @@ void MainWindow::slot_serialData(QString portName, QString baudRate)
 //slot..close serial
 void MainWindow::slot_closeSerial(QString portName, QString baudRate)
 {
+    portName = portName;
+    baudRate = baudRate;
     if(isSerialPortConnected())
     {
         m_isSerialPortConnected = false;

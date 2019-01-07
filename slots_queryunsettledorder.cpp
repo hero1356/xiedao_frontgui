@@ -53,6 +53,7 @@ void MainWindow::on_m_unsettledOrderQueryBtn_clicked()
 
     Http* pHttpFun = new Http();
     QString strUrl = dest_ip_and_port + "/order/unsettled/get?ordertime='" + playTime + "'";
+    strUrl = httpGetGenerateSign(strUrl);
     connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
             this,SLOT(slot_getUnsettledOrderResult(bool,const QString&)));
     qDebug() <<"Send http: "<< strUrl;
@@ -70,6 +71,7 @@ void MainWindow::on_m_unsettledOrderQueryAllBtn_clicked()
 
     Http* pHttpFun = new Http();
     QString strUrl = dest_ip_and_port + "/order/unsettled/get";
+    strUrl = httpGetGenerateSign(strUrl);
     connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
             this,SLOT(slot_getUnsettledOrderResult(bool,const QString&)));
     qDebug() <<"Send http: "<< strUrl;
@@ -90,6 +92,7 @@ void MainWindow::on_m_unsettledOrderQuerySectionBtn_clicked()
 
     Http* pHttpFun = new Http();
     QString strUrl = dest_ip_and_port + "/order/unsettled/get?begintime='" + begin +"'&endtime='" + end + "'";
+    strUrl = httpGetGenerateSign(strUrl);
     connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
             this,SLOT(slot_getUnsettledOrderResult(bool,const QString&)));
     qDebug() <<"Send http: "<< strUrl;
@@ -405,15 +408,16 @@ void MainWindow::onOrderInfoDelClicked()
     QJsonDocument document;
     document.setObject(obj);
     QString json(document.toJson(QJsonDocument::Compact));
-    QString body = json;
+    QString postBody = json;
 
-    qDebug() <<"post body: "<< body;
     Http* pHttpFun = new Http();
     QString strUrl = dest_ip_and_port+"/order/unsettled/del";
     connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
             this,SLOT(slot_orderInfoDelResult(bool,const QString&)));
     qDebug() <<"Send http: "<< strUrl;
-    pHttpFun->post(strUrl,body);
+    postBody = httpPostGenerateSign(postBody);
+    qDebug() << "postBody:"<< postBody;
+    pHttpFun->post(strUrl,postBody);
 }
 
 //订单删除结果

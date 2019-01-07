@@ -8,9 +8,10 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QRegExp>
+#include <QCryptographicHash>
 #include <qDebug>
 
-AddCardDlg::AddCardDlg(QWidget *parent) :
+AddCardDlg::AddCardDlg(QString account, QString pwd, QWidget *parent) :
     QDialog(parent, Qt::WindowCloseButtonHint),
     ui(new Ui::AddCardDlg)
 {
@@ -18,11 +19,14 @@ AddCardDlg::AddCardDlg(QWidget *parent) :
 
     m_isAddCardSuccess = false;
 
+    currentOperator = account;
+    userPwd = pwd;
+
     QRegExp regExp("[A-Z][0-9][0-9][0-9]");
     ui->cardSNEdit->setValidator(new QRegExpValidator(regExp,this));
 
     AppConfig config;
-    dest_ip_and_port = "http://"+config.ip()+":"+config.port();
+    dest_ip_and_port = "https://"+config.ip()+":"+config.port();
     qDebug() << "目标地址" <<dest_ip_and_port;
 }
 
@@ -88,6 +92,7 @@ void AddCardDlg::on_OkBtn_clicked()
 
     Http* pHttpFun = new Http();
     QString strUrl = dest_ip_and_port+"/card/add?cardid=" + cardID + "&cardsn=" + cardSN;
+    strUrl = httpGetGenerateSign(strUrl);
     connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
             this,SLOT(slot_cardAddResult(bool,const QString&)));
 
@@ -154,4 +159,38 @@ QString AddCardDlg::slot_cardAddResult(bool success, const QString &strResult)
 void AddCardDlg::slot_receCardID(unsigned int cardID)
 {
     ui->cardIDEdit->setText(QString::number(cardID));
+}
+
+QString AddCardDlg::generateSign(QString input)
+{
+    QString ret;
+
+    ret = QCryptographicHash::hash(input.toLatin1(),QCryptographicHash::Md5).toHex();
+
+    return ret;
+}
+
+QString AddCardDlg::httpGetGenerateSign(QString input)
+{
+    if( !ENCRYPTION_TRANSMISSION )
+        return input;
+
+    QString ret = input;
+
+    int pos = input.indexOf('?');
+
+    if(pos == -1)
+    {
+        QString sign = generateSign(userPwd);
+
+        ret += QString("?keyid="+currentOperator+",sign:"+sign);
+
+    }else{
+
+        QString sign = generateSign(QString(ret.mid(pos+1)+userPwd));
+
+        ret += QString("&keyid="+currentOperator+",sign:"+sign);
+    }
+
+    return ret;
 }

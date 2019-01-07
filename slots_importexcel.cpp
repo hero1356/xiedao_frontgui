@@ -77,6 +77,8 @@ void MainWindow::on_m_importOrderBtn_clicked()
     connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
             this,SLOT(slot_addUnsettledOrderResult(bool,const QString&)));
     qDebug() <<"Send http: "<< strUrl;
+    postBody = httpPostGenerateSign(postBody);
+    qDebug() << "postBody:"<< postBody;
     pHttpFun->post(strUrl, postBody);
 }
 

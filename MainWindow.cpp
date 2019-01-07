@@ -7,6 +7,7 @@
 #include <QThread>
 #include <QDebug>
 
+
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     ui(new Ui::MainWindow), m_pOpenSerialDlg(new OpenSerialDlg)
 {
@@ -41,6 +42,7 @@ void MainWindow::sysInit()
 
     //参数初始化
     currentOperator = "admin";
+    userPwd = "admin";
     m_isSerialPortConnected = false;
     currentIndex = 0;
     m_isStartMarkCard = false;

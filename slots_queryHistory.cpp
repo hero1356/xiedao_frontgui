@@ -89,15 +89,16 @@ void MainWindow::on_m_queryHistoryBtn1_clicked()
     QJsonDocument document;
     document.setObject(obj);
     QString json(document.toJson(QJsonDocument::Compact));
-    QString body = json;
+    QString postBody = json;
 
-    qDebug() <<"post body: "<< body;
     Http* pHttpFun = new Http();
     QString strUrl = dest_ip_and_port+"/user/score/history";
     connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
             this,SLOT(slot_getHistoryResult(bool,const QString&)));
     qDebug() <<"Send http: "<< strUrl;
-    pHttpFun->post(strUrl,body);
+    postBody = httpPostGenerateSign(postBody);
+    qDebug() << "postBody:"<< postBody;
+    pHttpFun->post(strUrl,postBody);
 
 }
 
@@ -120,15 +121,16 @@ void MainWindow::on_m_queryHistoryaBtn2_clicked()
     QJsonDocument document;
     document.setObject(obj);
     QString json(document.toJson(QJsonDocument::Compact));
-    QString body = json;
+    QString postBody = json;
 
-    qDebug() <<"post body: "<< body;
     Http* pHttpFun = new Http();
     QString strUrl = dest_ip_and_port+"/user/score/history";
     connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
             this,SLOT(slot_getHistoryResult(bool,const QString&)));
     qDebug() <<"Send http: "<< strUrl;
-    pHttpFun->post(strUrl,body);
+    postBody = httpPostGenerateSign(postBody);
+    qDebug() << "postBody:"<< postBody;
+    pHttpFun->post(strUrl,postBody);
 }
 
 void MainWindow::slot_getHistoryResult(bool success, const QString& strResult)

@@ -97,15 +97,16 @@ void MainWindow::on_m_queryInfoBtn1_clicked()
     QJsonDocument document;
     document.setObject(obj);
     QString json(document.toJson(QJsonDocument::Compact));
-    QString body = json;
+    QString postBody = json;
 
-    qDebug() <<"post body: "<< body;
     Http* pHttpFun = new Http();
     QString strUrl = dest_ip_and_port+"/user/traveler/get";
     connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
             this,SLOT(slot_getTravelerResult(bool,const QString&)));
     qDebug() <<"Send http: "<< strUrl;
-    pHttpFun->post(strUrl,body);
+    postBody = httpPostGenerateSign(postBody);
+    qDebug() << "postBody:"<< postBody;
+    pHttpFun->post(strUrl,postBody);
 }
 
 //查询游客信息————使用卡号
@@ -134,15 +135,16 @@ void MainWindow::on_m_queryInfoBtn2_clicked()
     QJsonDocument document;
     document.setObject(obj);
     QString json(document.toJson(QJsonDocument::Compact));
-    QString body = json;
+    QString postBody = json;
 
-    qDebug() <<"post body: "<< body;
     Http* pHttpFun = new Http();
     QString strUrl = dest_ip_and_port+"/user/traveler/get";
     connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
             this,SLOT(slot_getTravelerResult(bool,const QString&)));
     qDebug() <<"Send http: "<< strUrl;
-    pHttpFun->post(strUrl,body);
+    postBody = httpPostGenerateSign(postBody);
+    qDebug() << "postBody:"<< postBody;
+    pHttpFun->post(strUrl,postBody);
 }
 
 //查询游客信息返回结果
@@ -225,6 +227,7 @@ void MainWindow::onTravelerBackCardClicked()
 
      Http* pHttpFun = new Http();
      QString strUrl = dest_ip_and_port+"/user/backcard?cardid="+info.cardid()+"&comid=255";
+     strUrl = httpGetGenerateSign(strUrl);
      connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
              this,SLOT(slot_travelerBackCardResult(bool,const QString&)));
      qDebug() <<"Send http: "<< strUrl;
@@ -251,6 +254,7 @@ void MainWindow::onTravelerScoreClicked()
 
      Http* pHttpFun = new Http();
      QString strUrl = dest_ip_and_port+"/user/score?cardid="+info.cardid()+"&comid=255";
+     strUrl = httpGetGenerateSign(strUrl);
      connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
              this,SLOT(slot_getTravelerScoreResult(bool,const QString&)));
      qDebug() <<"Send http: "<< strUrl;
@@ -646,6 +650,7 @@ void MainWindow::batBackCard(QList<TravlerInfo>& list)
          TravlerInfo info = list[0];
          Http* pHttpFun = new Http();
          QString strUrl = dest_ip_and_port+"/user/backcard?cardid="+info.cardid()+"&comid=255";
+         strUrl = httpGetGenerateSign(strUrl);
          connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
                  this,SLOT(slot_travelerBackCardResult(bool,const QString&)));
          qDebug() <<"Send http: "<< strUrl;
@@ -670,7 +675,6 @@ void MainWindow::slot_travelerBackCardResult(bool success, const QString& strRes
     }
 
     QString rslt, name,cardid;
-    bool ret = true;
     QString str = "default";
     QString buf = strResult;
     QByteArray data = buf.toUtf8();
@@ -718,7 +722,6 @@ void MainWindow::slot_travelerBackCardResult(bool success, const QString& strRes
 
         }else{
             str = "json is not object";
-            ret = false;
         }
     }
     qDebug() << str;
@@ -807,15 +810,16 @@ void MainWindow::setCaptain(QString account, QString leadername,QString teamid)
     QJsonDocument document;
     document.setObject(obj);
     QString json(document.toJson(QJsonDocument::Compact));
-    QString body = json;
-    qDebug() << "postbody:" << body;
+    QString postBody = json;
 
     Http* pHttpFun = new Http();
     QString strUrl = dest_ip_and_port+"/user/leader/assign";
     connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
             this,SLOT(slot_setCaptainResult(bool,const QString&)));
     qDebug() <<"Send http: "<< strUrl;
-    pHttpFun->post(strUrl,body);
+    postBody = httpPostGenerateSign(postBody);
+    qDebug() << "postBody:"<< postBody;
+    pHttpFun->post(strUrl,postBody);
 }
 
 // 设置队长结果解析

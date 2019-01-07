@@ -144,13 +144,15 @@ void MainWindow::slot_startMakeCard(unsigned int cardid)
     QString groupname = info.group();
 
     //发送http查询cardID是否有效
-     QString body = makeCardidQueryBody(cardID, teamname, groupname);
+     QString postBody = makeCardidQueryBody(cardID, teamname, groupname);
      Http* pHttpFun = new Http();
      QString strUrl = dest_ip_and_port + "/user/makegroup";
      connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
              this,SLOT(slot_makeCardQueryResult(bool,const QString&)));
      qDebug() <<"Send http: "<< strUrl;
-     pHttpFun->post(strUrl,body);
+     postBody = httpPostGenerateSign(postBody);
+     qDebug() << "postBody:"<< postBody;
+     pHttpFun->post(strUrl,postBody);
 }
  //查询cardID是否有效HTTP body
 QString MainWindow::makeCardidQueryBody(QString cardid, QString teamname, QString groupname)
@@ -247,6 +249,8 @@ void MainWindow::sendTransferRequest(QString cardid, QString cardsn, QString tea
     connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
             this,SLOT(slot_transferResult(bool,const QString&)));
     qDebug() <<"Send http: "<< strUrl;
+    postBody = httpPostGenerateSign(postBody);
+    qDebug() << "postBody:"<< postBody;
     pHttpFun->post(strUrl, postBody);
 }
 
@@ -456,15 +460,16 @@ void MainWindow::getGuider(QString state)
     QJsonDocument document;
     document.setObject(obj);
     QString json(document.toJson(QJsonDocument::Compact));
-    QString body = json;
+    QString postBody = json;
 
-    qDebug() <<"Send body: "<< body;
     Http* pHttpFun = new Http();
     QString strUrl = dest_ip_and_port+"/user/guider/get";
     connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
             this,SLOT(slot_getGuiderResult(bool,const QString&)));
     qDebug() <<"Send http: "<< strUrl;
-    pHttpFun->post(strUrl,body);
+    postBody = httpPostGenerateSign(postBody);
+    qDebug() << "postBody:"<< postBody;
+    pHttpFun->post(strUrl,postBody);
 }
 
 // 查询导游结果
@@ -538,6 +543,8 @@ void MainWindow::setGuider(QString groupid, QString guider)
     connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
             this,SLOT(slot_setGuiderResult(bool,const QString&)));
     qDebug() <<"Send http: "<< strUrl;
+    postBody = httpPostGenerateSign(postBody);
+    qDebug() << "postBody:"<< postBody;
     pHttpFun->post(strUrl, postBody);
 
 }

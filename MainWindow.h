@@ -13,6 +13,7 @@
 #include <QListWidget>
 #include <QPointer>
 #include <QKeyEvent>
+#include <QCryptographicHash>
 #include "AppConfig.h"
 #include "AddCardDlg.h"
 #include "OpenSerialDlg.h"
@@ -39,6 +40,8 @@
 #define index_cardManage  3
 #define index_history  4
 
+#define ENCRYPTION_TRANSMISSION 1
+
 namespace Ui {
 class MainWindow;
 }
@@ -54,8 +57,9 @@ class MainWindow : public QMainWindow
     int currentIndex;
     bool m_isStartMarkCard;
 
- //当前登录用户名
+ //当前登录用户名和密码
     QString currentOperator;
+    QString userPwd;
 
 // IP 和 port
     QString dest_ip_and_port;
@@ -151,6 +155,11 @@ class MainWindow : public QMainWindow
     void realPrint(QString teamname, QString groupname,
                    QString leader,   QString guider,
                    QString number,        QString info);
+
+    //加密相关
+    QString generateSign(QString input);
+    QString httpGetGenerateSign(QString input);
+    QString httpPostGenerateSign(QString input);
 
 
 public:

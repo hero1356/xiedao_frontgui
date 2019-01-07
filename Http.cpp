@@ -1,5 +1,6 @@
 #include "Http.h"
 #include <QTextCodec>
+#include <QCryptographicHash>
 
 const int nHTTP_TIME = 10000; //10秒
 
@@ -97,4 +98,3 @@ void Http::slot_requestTimeout()
     this->deleteLater();//释放内存
 
 }
-

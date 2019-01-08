@@ -181,15 +181,23 @@ QString AddCardDlg::httpGetGenerateSign(QString input)
 
     if(pos == -1)
     {
-        QString sign = generateSign(userPwd);
+        QString MD5_in = userPwd;
 
-        ret += QString("?keyid="+currentOperator+",sign:"+sign);
+        qDebug() << "MD5_in" << MD5_in;
+
+        QString sign = generateSign(MD5_in);
+
+        ret += QString("?keyid="+currentOperator+"&sign="+sign);
 
     }else{
 
-        QString sign = generateSign(QString(ret.mid(pos+1)+userPwd));
+        QString MD5_in = QString(ret.mid(pos+1)+userPwd);
 
-        ret += QString("&keyid="+currentOperator+",sign:"+sign);
+        qDebug() << "MD5_in:" << MD5_in;
+
+        QString sign = generateSign(MD5_in);
+
+        ret += QString("&keyid="+currentOperator+"&sign="+sign);
     }
 
     return ret;

@@ -32,6 +32,7 @@
 #include "UserInputDlg.h"
 #include "HistoryInfoModel.h"
 #include "LoginDlg.h"
+#include "EncryptionTransmission.h"
 
 
 #define index_importExcel  0
@@ -157,6 +158,7 @@ class MainWindow : public QMainWindow
                    QString number,        QString info);
 
     //加密相关
+
     QString generateSign(QString input);
     QString httpGetGenerateSign(QString input);
     QString httpPostGenerateSign(QString input);

@@ -58,7 +58,8 @@ SOURCES += main.cpp\
             slots_queryHistory.cpp \
             HistoryInfo.cpp \
             HistoryInfoModel.cpp \
-            LoginDlg.cpp
+            LoginDlg.cpp \
+    EncryptionTransmission.cpp
 
 HEADERS  += MainWindow.h \
             Http.h \
@@ -82,7 +83,8 @@ HEADERS  += MainWindow.h \
             UserInputDlg.h \
             HistoryInfo.h \
             HistoryInfoModel.h \
-            LoginDlg.h
+            LoginDlg.h \
+    EncryptionTransmission.h
 
 FORMS    += MainWindow.ui \
             ModCardInfoDlg.ui \

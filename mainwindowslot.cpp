@@ -21,7 +21,7 @@ QString MainWindow::generateSign(QString input)
 {
     QString ret;
 
-    ret = QCryptographicHash::hash(input.toLatin1(),QCryptographicHash::Md5).toHex();
+    ret = QCryptographicHash::hash(input.toLocal8Bit(),QCryptographicHash::Md5).toHex();
 
     return ret;
 }
@@ -37,15 +37,23 @@ QString MainWindow::httpGetGenerateSign(QString input)
 
     if(pos == -1)
     {
-        QString sign = generateSign(userPwd);
+        QString MD5_in = userPwd;
 
-        ret += QString("?keyid="+currentOperator+",sign:"+sign);
+        qDebug() << "MD5_in" << MD5_in;
+
+        QString sign = generateSign(MD5_in);
+
+        ret += QString("?keyid="+currentOperator+"&sign="+sign);
 
     }else{
 
-        QString sign = generateSign(QString(ret.mid(pos+1)+userPwd));
+        QString MD5_in = QString(ret.mid(pos+1)+userPwd);
 
-        ret += QString("&keyid="+currentOperator+",sign:"+sign);
+        qDebug() << "MD5_in:" << MD5_in;
+
+        QString sign = generateSign(MD5_in);
+
+        ret += QString("&keyid="+currentOperator+"&sign="+sign);
     }
 
     return ret;
@@ -56,11 +64,15 @@ QString MainWindow::httpPostGenerateSign(QString input)
     if( !ENCRYPTION_TRANSMISSION )
         return input;
 
-    QString ret = "{data:"+input;
+    QString ret = "{\"data\":"+input;
 
-    QString sign = generateSign(QString(input+userPwd));
+    QString MD5_in = input + userPwd;
 
-    ret += QString(",keyid:"+currentOperator+",sign:"+sign+"}");
+    qDebug() << "MD5_in:" << MD5_in;
+
+    QString sign = generateSign(MD5_in);
+
+    ret += QString(",\"keyid\":\""+currentOperator+"\",\"sign\":\""+sign+"\"}");
 
     return ret;
 }

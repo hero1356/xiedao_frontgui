@@ -104,7 +104,7 @@ void MainWindow::on_m_queryInfoBtn1_clicked()
     connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
             this,SLOT(slot_getTravelerResult(bool,const QString&)));
     qDebug() <<"Send http: "<< strUrl;
-    postBody = httpPostGenerateSign(postBody);
+    postBody = m_et.httpPostGenerateSign(postBody);
     qDebug() << "postBody:"<< postBody;
     pHttpFun->post(strUrl,postBody);
 }
@@ -142,7 +142,7 @@ void MainWindow::on_m_queryInfoBtn2_clicked()
     connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
             this,SLOT(slot_getTravelerResult(bool,const QString&)));
     qDebug() <<"Send http: "<< strUrl;
-    postBody = httpPostGenerateSign(postBody);
+    postBody = m_et.httpPostGenerateSign(postBody);
     qDebug() << "postBody:"<< postBody;
     pHttpFun->post(strUrl,postBody);
 }
@@ -227,7 +227,7 @@ void MainWindow::onTravelerBackCardClicked()
 
      Http* pHttpFun = new Http();
      QString strUrl = dest_ip_and_port+"/user/backcard?cardid="+info.cardid()+"&comid=255";
-     strUrl = httpGetGenerateSign(strUrl);
+     strUrl = m_et.httpGetGenerateSign(strUrl);
      connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
              this,SLOT(slot_travelerBackCardResult(bool,const QString&)));
      qDebug() <<"Send http: "<< strUrl;
@@ -254,7 +254,7 @@ void MainWindow::onTravelerScoreClicked()
 
      Http* pHttpFun = new Http();
      QString strUrl = dest_ip_and_port+"/user/score?cardid="+info.cardid()+"&comid=255";
-     strUrl = httpGetGenerateSign(strUrl);
+     strUrl = m_et.httpGetGenerateSign(strUrl);
      connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
              this,SLOT(slot_getTravelerScoreResult(bool,const QString&)));
      qDebug() <<"Send http: "<< strUrl;
@@ -650,7 +650,7 @@ void MainWindow::batBackCard(QList<TravlerInfo>& list)
          TravlerInfo info = list[0];
          Http* pHttpFun = new Http();
          QString strUrl = dest_ip_and_port+"/user/backcard?cardid="+info.cardid()+"&comid=255";
-         strUrl = httpGetGenerateSign(strUrl);
+         strUrl = m_et.httpGetGenerateSign(strUrl);
          connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
                  this,SLOT(slot_travelerBackCardResult(bool,const QString&)));
          qDebug() <<"Send http: "<< strUrl;
@@ -817,7 +817,7 @@ void MainWindow::setCaptain(QString account, QString leadername,QString teamid)
     connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
             this,SLOT(slot_setCaptainResult(bool,const QString&)));
     qDebug() <<"Send http: "<< strUrl;
-    postBody = httpPostGenerateSign(postBody);
+    postBody = m_et.httpPostGenerateSign(postBody);
     qDebug() << "postBody:"<< postBody;
     pHttpFun->post(strUrl,postBody);
 }

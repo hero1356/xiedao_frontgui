@@ -150,7 +150,7 @@ void MainWindow::slot_startMakeCard(unsigned int cardid)
      connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
              this,SLOT(slot_makeCardQueryResult(bool,const QString&)));
      qDebug() <<"Send http: "<< strUrl;
-     postBody = httpPostGenerateSign(postBody);
+     postBody = m_et.httpPostGenerateSign(postBody);
      qDebug() << "postBody:"<< postBody;
      pHttpFun->post(strUrl,postBody);
 }
@@ -249,7 +249,7 @@ void MainWindow::sendTransferRequest(QString cardid, QString cardsn, QString tea
     connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
             this,SLOT(slot_transferResult(bool,const QString&)));
     qDebug() <<"Send http: "<< strUrl;
-    postBody = httpPostGenerateSign(postBody);
+    postBody = m_et.httpPostGenerateSign(postBody);
     qDebug() << "postBody:"<< postBody;
     pHttpFun->post(strUrl, postBody);
 }
@@ -467,7 +467,7 @@ void MainWindow::getGuider(QString state)
     connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
             this,SLOT(slot_getGuiderResult(bool,const QString&)));
     qDebug() <<"Send http: "<< strUrl;
-    postBody = httpPostGenerateSign(postBody);
+    postBody = m_et.httpPostGenerateSign(postBody);
     qDebug() << "postBody:"<< postBody;
     pHttpFun->post(strUrl,postBody);
 }
@@ -543,7 +543,7 @@ void MainWindow::setGuider(QString groupid, QString guider)
     connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
             this,SLOT(slot_setGuiderResult(bool,const QString&)));
     qDebug() <<"Send http: "<< strUrl;
-    postBody = httpPostGenerateSign(postBody);
+    postBody = m_et.httpPostGenerateSign(postBody);
     qDebug() << "postBody:"<< postBody;
     pHttpFun->post(strUrl, postBody);
 

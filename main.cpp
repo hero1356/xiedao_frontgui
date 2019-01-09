@@ -9,14 +9,14 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     LoginDlg login;
+
     if( login.exec() == QDialog::Accepted )
     {
-        qDebug() << "Username: "<< login.getUser();
-        qDebug() << "Password:" <<login.getPwd();
+        QString name = login.getUser();
+        QString pwd = login.getPwd();
 
-        qDebug() << "Password md5:" << QCryptographicHash::hash(login.getPwd().toLatin1(),QCryptographicHash::Md5).toHex();
+        MainWindow w(name, pwd);
 
-        MainWindow w;
         w.show();
 
         return a.exec();

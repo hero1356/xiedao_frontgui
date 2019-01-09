@@ -5,6 +5,12 @@
 #include <QPainter>
 #include <QFont>
 #include <QMessageBox>
+#include <QByteArray>
+#include <QJsonParseError>
+#include <QJsonValue>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QJsonArray>
 
 
 LoginDlg::LoginDlg(QWidget *parent): QDialog(parent, Qt::FramelessWindowHint ),
@@ -12,6 +18,12 @@ LoginDlg::LoginDlg(QWidget *parent): QDialog(parent, Qt::FramelessWindowHint ),
 {
     ui->setupUi(this);
 
+    //读取配置文件，设置IP和Port
+    AppConfig config;
+    dest_ip_and_port = "https://"+config.ip()+":"+config.port();
+
+
+    //
     m_timer.start(100);
     connect(&m_timer, SIGNAL(timeout()), this, SLOT(onTimeout()));
 
@@ -84,6 +96,10 @@ void LoginDlg::on_loginBtn_clicked()
         m_user = ui->usernameEdit->text().trimmed();
         m_pwd = ui->passwordEdit->text();
 
+        EncryptionTransmission et;
+        et.setUserName(m_user);
+        et.setUserPwd(m_pwd);
+
         if( m_user == "")
         {
             QMessageBox::information(this, "提示", "用户名不能为空！");
@@ -94,7 +110,15 @@ void LoginDlg::on_loginBtn_clicked()
         }
         else
         {
-            done(Accepted);
+            Http* pHttpFun = new Http();
+            QString strUrl = dest_ip_and_port+"/user/login";
+            strUrl = et.httpGetGenerateSign(strUrl);
+            connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
+                    this,SLOT(on_loginResult(bool,const QString&)));
+            qDebug() <<"Send http: "<< strUrl;
+            pHttpFun->get(strUrl);
+
+//            done(Accepted);
         }
 
     }
@@ -149,4 +173,81 @@ LoginDlg::~LoginDlg()
 void LoginDlg::on_shutdownBtn_clicked()
 {
     done(Rejected);
+}
+
+void LoginDlg::on_loginResult(bool success, const QString &strResult)
+{
+    if( !success )
+    {
+        QMessageBox::information(this,"提示","登录超时！");
+        return;
+    }
+    QString rslt, reason;
+    jsonParse(strResult, rslt, reason);
+
+    if(rslt == "success")
+    {
+        done(Accepted);
+    }else{
+        showInformationMessage(QString("登录失败！\n"+reason+"。"));
+    }
+}
+bool LoginDlg::jsonParse(const QString& strResult, QString& rslt, QString& reason)
+{
+    bool ret = true;
+    QString str = "default";
+    QString buf = strResult;
+    QByteArray data = buf.toUtf8();
+
+    QJsonParseError jsonError;
+    QJsonDocument json = QJsonDocument::fromJson(data, &jsonError);
+    if (jsonError.error == QJsonParseError::NoError)
+    {
+        if (json.isObject())
+        {
+            QJsonObject rootObj = json.object();
+            //是否含有key  rslt
+            if(rootObj.contains("rslt"))
+            {
+                QJsonValue value = rootObj.value("rslt");
+                //判断是否是string类型
+                if (value.isString())
+                {
+                    rslt = value.toString();
+                    str = "ok";
+                }
+            }
+
+            //是否含有key  reason
+            if(rootObj.contains("reason"))
+            {
+                QJsonValue value = rootObj.value("reason");
+                if (value.isString())
+                {
+                    reason = value.toString();
+                    str = "ok";
+                }
+            }
+        }
+        else
+        {
+            str = "json is not object";
+            ret = false;
+        }
+    }
+    qDebug() <<"Json Parse Result: "<< str;
+    return ret;
+}
+void LoginDlg::showInformationMessage(QString message)
+{
+    QMessageBox msg(this);
+
+    msg.setWindowTitle("提示");
+    msg.setText(message);
+    msg.setIcon(QMessageBox::Information);
+    msg.setStandardButtons(QMessageBox::Ok);
+    msg.setButtonText(QMessageBox::Ok, QString("确定"));
+//    QTimer::singleShot(1000, &msg,SLOT(accept()));
+
+    msg.exec();
 }

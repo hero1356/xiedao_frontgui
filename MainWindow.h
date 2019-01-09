@@ -158,14 +158,11 @@ class MainWindow : public QMainWindow
                    QString number,        QString info);
 
     //加密相关
-
-    QString generateSign(QString input);
-    QString httpGetGenerateSign(QString input);
-    QString httpPostGenerateSign(QString input);
+    EncryptionTransmission m_et;
 
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QString name, QString pwd, QWidget *parent = 0);
     bool eventFilter(QObject *obj, QEvent *evt);
     ~MainWindow();
 

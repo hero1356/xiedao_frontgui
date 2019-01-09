@@ -214,8 +214,8 @@ void TravlerInfoModel::setHeader()
     list.append("姓名");
     list.append("年龄");
     list.append("联系方式");
-    list.append("卡号");
-    list.append("编号");
+    list.append("卡序号");
+    list.append("卡编号");
 
     list.append("队伍名称");
     list.append("组名");

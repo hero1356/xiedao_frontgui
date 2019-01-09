@@ -5,8 +5,6 @@
 EncryptionTransmission::EncryptionTransmission( QObject *parent) : QObject(parent)
 {
 
-
-
 }
 void EncryptionTransmission::setUserName(QString userName)
 {
@@ -22,7 +20,7 @@ QString EncryptionTransmission::generateSign(QString input)
 {
     QString ret;
 
-    ret = QCryptographicHash::hash(input.toLatin1(),QCryptographicHash::Md5).toHex();
+    ret = QCryptographicHash::hash(input.toLocal8Bit(),QCryptographicHash::Md5).toHex();
 
     return ret;
 }

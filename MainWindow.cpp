@@ -8,10 +8,15 @@
 #include <QDebug>
 
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
+MainWindow::MainWindow(QString name, QString pwd, QWidget *parent) : QMainWindow(parent),
     ui(new Ui::MainWindow), m_pOpenSerialDlg(new OpenSerialDlg)
 {
     ui->setupUi(this);
+
+    currentOperator = name;
+    userPwd = pwd;
+    m_et.setUserName(name);
+    m_et.setUserPwd(pwd);
 
     //系统初始化
     sysInit();
@@ -41,8 +46,7 @@ void MainWindow::sysInit()
     qDebug() << "目标地址" <<dest_ip_and_port;
 
     //参数初始化
-    currentOperator = "admin";
-    userPwd = "admin";
+
     m_isSerialPortConnected = false;
     currentIndex = 0;
     m_isStartMarkCard = false;

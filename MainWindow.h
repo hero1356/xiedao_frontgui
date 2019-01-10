@@ -33,6 +33,8 @@
 #include "HistoryInfoModel.h"
 #include "LoginDlg.h"
 #include "EncryptionTransmission.h"
+#include "ModGroupInfoDlg.h"
+#include "ModPersonInfoDlg.h"
 
 
 #define index_importExcel  0
@@ -264,8 +266,12 @@ protected slots:
     void slot_getTravelerScoreResult(bool success, const QString& strResult);
     void slot_travelerBackCardResult(bool success, const QString& strResult);
 
+    void slot_modGroupResult(bool success, const QString& strResult);
+
     void onTravelerListWidgetPrintClicked();
     void onTravelerListWidgetBatBackcardClicked();
+    void onTravelerGroupEditClicked();
+    void onTravelerPersonEditClicked();
 
 
     //历史查询

@@ -59,7 +59,9 @@ SOURCES += main.cpp\
             HistoryInfo.cpp \
             HistoryInfoModel.cpp \
             LoginDlg.cpp \
-    EncryptionTransmission.cpp
+    EncryptionTransmission.cpp \
+    ModGroupInfoDlg.cpp \
+    ModPersonInfoDlg.cpp
 
 HEADERS  += MainWindow.h \
             Http.h \
@@ -84,7 +86,9 @@ HEADERS  += MainWindow.h \
             HistoryInfo.h \
             HistoryInfoModel.h \
             LoginDlg.h \
-    EncryptionTransmission.h
+    EncryptionTransmission.h \
+    ModGroupInfoDlg.h \
+    ModPersonInfoDlg.h
 
 FORMS    += MainWindow.ui \
             ModCardInfoDlg.ui \
@@ -92,7 +96,9 @@ FORMS    += MainWindow.ui \
             SetLeaderAndGuiderDlg.ui \
             ShowTravlerScoreDlg.ui \
             UserInputDlg.ui \
-            LoginDlg.ui
+            LoginDlg.ui \
+    ModGroupInfoDlg.ui \
+    ModPersonInfoDlg.ui
 
 RC_ICONS = icon.ico
 

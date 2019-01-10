@@ -136,9 +136,10 @@ void MainWindow::travlerInfoListWidgetInit()
     connect(ui->m_travlerInfoListWidget,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(onTravelerListWidgetClicked(QListWidgetItem*)));
 
     m_traverListWidgetMenu.addAction(QIcon(":/icons/icons/print.png"),"打印人员对照单");
-//    m_traverListWidgetMenu.addAction("批量退卡");
+    m_traverListWidgetMenu.addSeparator();
+    m_traverListWidgetMenu.addAction(QIcon(":/icons/icons/edit.png"),"编辑该组信息");
     connect(m_traverListWidgetMenu.actions()[0], SIGNAL(triggered(bool)), this, SLOT(onTravelerListWidgetPrintClicked()));
-//    connect(m_traverListWidgetMenu.actions()[1], SIGNAL(triggered(bool)), this, SLOT(onTravelerListWidgetBatBackcardClicked()));
+    connect(m_traverListWidgetMenu.actions()[2], SIGNAL(triggered(bool)), this, SLOT(onTravelerGroupEditClicked()));
 
     ui->m_travlerInfoView->setColumnWidth(5, 150);
 }
@@ -157,6 +158,8 @@ void MainWindow::travlerInfoViewInit()
     m_traverInfoMenu.addAction(QIcon(":/icons/icons/leader.png"),"设置导游");
     m_traverInfoMenu.addSeparator();
     m_traverInfoMenu.addAction(QIcon(":/icons/icons/card.png"),"批量退卡");
+    m_traverInfoMenu.addSeparator();
+    m_traverInfoMenu.addAction(QIcon(":/icons/icons/edit.png"),"编辑人员信息");
 
     connect(m_traverInfoMenu.actions()[0], SIGNAL(triggered(bool)), this, SLOT(onTravelerBackCardClicked()));
     connect(m_traverInfoMenu.actions()[1], SIGNAL(triggered(bool)), this, SLOT(onTravelerScoreClicked()));
@@ -165,6 +168,7 @@ void MainWindow::travlerInfoViewInit()
     connect(m_traverInfoMenu.actions()[4], SIGNAL(triggered(bool)), this, SLOT(onTravelerSetGuiderClicked()));
     // m_traverInfoMenu.actions()[5]   ---- 空格
     connect(m_traverInfoMenu.actions()[6], SIGNAL(triggered(bool)), this, SLOT(onTravelerListWidgetBatBackcardClicked()));
+    connect(m_traverInfoMenu.actions()[8], SIGNAL(triggered(bool)), this, SLOT(onTravelerPersonEditClicked()));
 
 }
 

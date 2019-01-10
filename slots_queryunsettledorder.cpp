@@ -125,7 +125,7 @@ void MainWindow::slot_getUnsettledOrderResult(bool success,const QString& strRes
         }
         else if( rslt == "failed")
         {
-            setTip("查询失败！\n"+reason);
+            setTip("查询失败！"+reason);
             showErrorMessage("查询失败！\n"+reason);
         }
     }

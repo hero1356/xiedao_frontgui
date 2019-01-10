@@ -277,7 +277,6 @@ void MainWindow::slot_getTravelerScoreResult(bool success, const QString& strRes
     QString current_date =QDateTime::currentDateTime().toString("yyyy年MM月dd日");
     ShowTravlerScoreDlg showScore(strResult, current_date);
     showScore.exec();
-
 }
 
 
@@ -331,6 +330,243 @@ void MainWindow::onTravelerSetGuiderClicked()
     getGuider("idle");
 }
 
+// 右键菜单————批量退卡
+void MainWindow::onTravelerListWidgetBatBackcardClicked()
+{
+    qDebug() <<"onTravelerListWidgetBatBackcardClicked";
+
+    int r = showQueryMessage("你确定要将该组的成员全部退卡吗？");
+
+    if(r == QMessageBox::No) return;
+
+    //获取右键位置的 index
+    QModelIndex index = ui->m_travlerInfoView->currentIndex();
+
+    qDebug() << "Current index:" << index.row();
+    if(index.row() == -1)
+    {
+        showErrorMessage("无效操作");
+        return;
+    }
+
+    //获取所在行的信息
+    TravlerInfo info(m_traverInfoModel.getItem(index.row()));
+
+    //获取key
+    QString key = info.teamname() + " - " + info.groupname();
+
+    //获取key对应的list
+    QList<TravlerInfo> list = m_traverInfoMap.value(key);
+
+    m_backCardList = m_traverInfoMap.value(key);
+
+    if(list.isEmpty())
+    {
+        showErrorMessage("该组成员为空！不能退卡！");
+        return;
+    }
+
+    batBackCard(m_backCardList);
+
+
+}
+
+
+//右键菜单————打印人员对照单
+void MainWindow::onTravelerListWidgetPrintClicked()
+{
+    qDebug() << "current row" << ui->m_travlerInfoListWidget->currentRow();
+
+    if(ui->m_travlerInfoListWidget->currentRow() == -1)
+    {
+        showErrorMessage("无效操作！");
+        return;
+    }
+
+    QString key = ui->m_travlerInfoListWidget->currentItem()->text();
+    QList<TravlerInfo> list = m_traverInfoMap.value(key);
+
+    if(list.isEmpty())
+    {
+        showErrorMessage("该组成员为空！不能打印！");
+        return;
+    }
+
+
+    //获取要打印的信息
+    QString teamname = list[0].teamname();
+    QString groupname = list[0].groupname();
+    QString leader = list[0].leadername();
+    QString guider = list[0].guider();
+    int count = list.count();
+    QString number = QString::number(count, 10);
+
+    QString p_info;
+
+    for(int i=0; i<count; i++)
+    {
+        QString cardsn = list[i].cardsn();
+        QString username = list[i].username();
+        QString telephone = list[i].telephone();
+
+        p_info.append(QString(cardsn+"\t"+username+"\t"+telephone+"\n"));
+    }
+
+    realPrint(teamname, groupname, leader, guider, number, p_info );
+
+}
+
+
+//右键菜单————编辑组信息
+void MainWindow::onTravelerGroupEditClicked()
+{
+    qDebug() << "current row :" << ui->m_travlerInfoListWidget->currentRow();
+
+    if( ui->m_travlerInfoListWidget->currentRow() == -1)
+    {
+        showErrorMessage("无效操作！");
+        return;
+    }
+
+    //获取退伍信息——teamname， groupname， teamid，groupid等
+    QString key = ui->m_travlerInfoListWidget->currentItem()->text();
+    QStringList list = key.split('-');
+    QString old_teamname = list.at(0);
+    QString old_groupname = list.at(1);
+
+    QList<TravlerInfo> infoList = m_traverInfoMap.value(key);
+    if(infoList.isEmpty())
+    {
+        showErrorMessage("该组成员为空！");
+        return;
+    }
+    QString teamid = infoList[0].teamid();
+    QString groupid = infoList[0].groupid();
+
+    qDebug() << "old teamname:" << old_teamname;
+    qDebug() << "old groupname:" << old_groupname;
+    qDebug() << "teamid:" << teamid;
+    qDebug() << "groupid:" << groupid;
+
+
+    ModGroupInfoDlg dlg;
+    dlg.setGroupname(old_groupname.trimmed());
+    dlg.setTeamname(old_teamname.trimmed());
+    if( dlg.exec() == QDialog::Accepted )
+    {
+        QString new_teamname = dlg.getTeamname();
+        QString new_groupname = dlg.getGroupname();
+
+        qDebug() << "new_teamname : "<<new_teamname;
+        qDebug() << "new_groupname : "<<new_groupname;
+
+        QJsonObject obj;
+        obj.insert("teamname", new_teamname);
+        obj.insert("groupname", new_groupname);
+        obj.insert("teamid", teamid);
+        obj.insert("groupid", groupid);
+        QJsonDocument document;
+        document.setObject(obj);
+        QString json(document.toJson(QJsonDocument::Compact));
+        QString postBody = json;
+
+        Http* pHttpFun = new Http();
+        QString strUrl = dest_ip_and_port+"/user/group/mod";
+        connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
+                this,SLOT(slot_modGroupResult(bool,const QString&)));
+        qDebug() <<"Send http: "<< strUrl;
+        postBody = m_et.httpPostGenerateSign(postBody);
+        qDebug() << "postBody:"<< postBody;
+        pHttpFun->post(strUrl,postBody);
+
+    }
+
+}
+//槽函数——修改队伍信息
+void MainWindow::slot_modGroupResult(bool success, const QString& strResult)
+{
+    qDebug() << "slot_modGroupResult :" << strResult;
+    if( !success )
+    {
+        setTip("请求失败！"+strResult);
+        showErrorMessage("请求失败！\n"+strResult);
+        return;
+    }
+    QString rslt, reason;
+    if( jsonParse(strResult, rslt, reason))
+    {
+        if( rslt == "success")
+        {
+            setTip("信息修改成功！");
+            on_m_queryInfoBtn1_clicked();
+        }
+        else if( rslt == "failed")
+        {
+            setTip("信息修改失败！"+reason);
+            showErrorMessage("信息修改失败！\n"+reason);
+        }
+    }
+}
+
+//右键菜单————编辑人员信息
+void MainWindow::onTravelerPersonEditClicked()
+{
+    //获取右键位置的 index
+    QModelIndex index = ui->m_travlerInfoView->currentIndex();
+
+    qDebug() << "Current index:" << index.row();
+    if(index.row() == -1)
+    {
+        showErrorMessage("无效操作");
+        return;
+    }
+
+    //获取所在行的信息
+    TravlerInfo info(m_traverInfoModel.getItem(index.row()));
+    ModPersonInfoDlg dlg;
+    dlg.set_username(info.username());
+    dlg.set_age(info.age());
+    dlg.set_telephone(info.telephone());
+    dlg.set_cardid(info.cardid());
+    connect(this, SIGNAL(signal_sendCardID(uint)), &dlg, SLOT(slot_cardid(uint)));
+    if( dlg.exec() == QDialog::Accepted )
+    {
+        QString username = dlg.username();
+        QString age = dlg.age();
+        QString telephone = dlg.telephone();
+        QString cardid = dlg.cardid();
+        QString ismodcard = dlg.ismodcard();
+
+        qDebug() << "new username: " << username;
+        qDebug() << "new age: " << age;
+        qDebug() << "new telephone: " << telephone;
+        qDebug() << "new cardid: " << cardid;
+
+
+        QJsonObject obj;
+        obj.insert("account", info.account());
+        obj.insert("username", username);
+        obj.insert("age", age);
+        obj.insert("telephone", telephone);
+        obj.insert("cardid", cardid);
+        obj.insert("ismodcard",ismodcard);
+        obj.insert("oldcardid",info.cardid());
+        QJsonDocument document;
+        document.setObject(obj);
+        QString json(document.toJson(QJsonDocument::Compact));
+        QString postBody = json;
+
+        Http* pHttpFun = new Http();
+        QString strUrl = dest_ip_and_port+"/user/mod";
+        connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
+                this,SLOT(slot_modGroupResult(bool,const QString&)));
+        qDebug() <<"Send http: "<< strUrl;
+        postBody = m_et.httpPostGenerateSign(postBody);
+        qDebug() << "postBody:"<< postBody;
+        pHttpFun->post(strUrl,postBody);
+
+    }
+}
 
 //游客查询结果解析
 bool MainWindow::travelerResultParse(const QString& strResult, QString& rslt, QString& reason, QList<TravlerInfo>& list)
@@ -555,93 +791,7 @@ void MainWindow::onTravelerListWidgetClicked(QListWidgetItem* item)
 }
 
 
-//右键打印
-void MainWindow::onTravelerListWidgetPrintClicked()
-{
-    qDebug() <<"onTravelerListWidgetPrintClicked";
-
-    qDebug() << "current row" << ui->m_travlerInfoListWidget->currentRow();
-
-    if(ui->m_travlerInfoListWidget->currentRow() == -1)
-    {
-        showErrorMessage("无效操作！");
-        return;
-    }
-
-    QString key = ui->m_travlerInfoListWidget->currentItem()->text();
-    QList<TravlerInfo> list = m_traverInfoMap.value(key);
-
-    if(list.isEmpty())
-    {
-        showErrorMessage("该组成员为空！不能打印！");
-        return;
-    }
-
-
-    //获取要打印的信息
-    QString teamname = list[0].teamname();
-    QString groupname = list[0].groupname();
-    QString leader = list[0].leadername();
-    QString guider = list[0].guider();
-    int count = list.count();
-    QString number = QString::number(count, 10);
-
-    QString p_info;
-
-    for(int i=0; i<count; i++)
-    {
-        QString cardsn = list[i].cardsn();
-        QString username = list[i].username();
-        QString telephone = list[i].telephone();
-
-        p_info.append(QString(cardsn+"\t"+username+"\t"+telephone+"\n"));
-    }
-
-    realPrint(teamname, groupname, leader, guider, number, p_info );
-
-}
-
-// 右键批量退卡
-void MainWindow::onTravelerListWidgetBatBackcardClicked()
-{
-    qDebug() <<"onTravelerListWidgetBatBackcardClicked";
-
-    int r = showQueryMessage("你确定要将该组的成员全部退卡吗？");
-
-    if(r == QMessageBox::No) return;
-
-    //获取右键位置的 index
-    QModelIndex index = ui->m_travlerInfoView->currentIndex();
-
-    qDebug() << "Current index:" << index.row();
-    if(index.row() == -1)
-    {
-        showErrorMessage("无效操作");
-        return;
-    }
-
-    //获取所在行的信息
-    TravlerInfo info(m_traverInfoModel.getItem(index.row()));
-
-    //获取key
-    QString key = info.teamname() + " - " + info.groupname();
-
-    //获取key对应的list
-    QList<TravlerInfo> list = m_traverInfoMap.value(key);
-
-    m_backCardList = m_traverInfoMap.value(key);
-
-    if(list.isEmpty())
-    {
-        showErrorMessage("该组成员为空！不能退卡！");
-        return;
-    }
-
-    batBackCard(m_backCardList);
-
-
-}
-
+//批量退卡
 void MainWindow::batBackCard(QList<TravlerInfo>& list)
 {
     if(!list.isEmpty())

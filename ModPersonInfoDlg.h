@@ -42,9 +42,8 @@ private slots:
 
     void on_cancel_clicked();
 
-    void slot_cardid(uint cardid);
+    void slot_cardid(QString cardid);
 
-    void on_cardidEdit_textChanged(const QString &cardid);
 
 private:
     Ui::ModPersonInfoDlg *ui;

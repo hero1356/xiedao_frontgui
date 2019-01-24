@@ -99,7 +99,7 @@ void MainWindow::on_m_makeCardEndPrintBtn_clicked()
 
 
 //button slot : 开始批量制卡
-void MainWindow::on_m_beginMarkCardBatchBtn_clicked()
+void MainWindow::on_m_beginMakeCardBatchBtn_clicked()
 {
     if(!isSerialPortConnected())
     {
@@ -110,33 +110,33 @@ void MainWindow::on_m_beginMarkCardBatchBtn_clicked()
     if( m_isStartMarkCard == false)
     {
         m_isStartMarkCard = true;
-        ui->m_beginMarkCardBatchBtn->setVisible(false);
-        ui->m_StopMarkCardBatchBtn->setVisible(true);
-        connect(this, SIGNAL(signal_sendCardID(uint)), this, SLOT(slot_startMakeCard(uint)));
-        qDebug() <<"connect(this, SIGNAL(signal_sendCardID(uint)), this, SLOT(slot_startMakeCard(uint)));";
+        ui->m_beginMakeCardBatchBtn->setVisible(false);
+        ui->m_StopMakeCardBatchBtn->setVisible(true);
+        connect(this, SIGNAL(signal_sendCardID(QString)), this, SLOT(slot_startMakeCard(QString)));
+        qDebug() <<"connect(this, SIGNAL(signal_sendCardID(QString)), this, SLOT(slot_startMakeCard(QString)));";
     }
 }
 //button slot : 停止批量制卡
-void MainWindow::on_m_StopMarkCardBatchBtn_clicked()
+void MainWindow::on_m_StopMakeCardBatchBtn_clicked()
 {
     if( m_isStartMarkCard == true)
     {
         m_isStartMarkCard = false;
-        ui->m_beginMarkCardBatchBtn->setVisible(true);
-        ui->m_StopMarkCardBatchBtn->setVisible(false);
-        disconnect(this, SIGNAL(signal_sendCardID(uint)), this, SLOT(slot_startMakeCard(uint)));
-        qDebug()<<"disconnect(this, SIGNAL(signal_sendCardID(uint)), this, SLOT(slot_startMakeCard(uint)));";
+        ui->m_beginMakeCardBatchBtn->setVisible(true);
+        ui->m_StopMakeCardBatchBtn->setVisible(false);
+        disconnect(this, SIGNAL(signal_sendCardID(QString)), this, SLOT(slot_startMakeCard(QString)));
+        qDebug()<<"disconnect(this, SIGNAL(signal_sendCardID(QString)), this, SLOT(slot_startMakeCard(QString)));";
     }
 }
 
 // 开始制卡：
-void MainWindow::slot_startMakeCard(unsigned int cardid)
+void MainWindow::slot_startMakeCard(QString cardid)
 {
     qDebug() << "slot_startMakeCard:"<< cardid;
 
 
     //获取刷卡卡号
-    QString cardID(QString::number(cardid,10));
+    QString cardID = cardid;
 
     //获取当前行需要的数据
     OrderInfo info(m_orderInfoModel.getItem(currentIndex));
@@ -144,7 +144,7 @@ void MainWindow::slot_startMakeCard(unsigned int cardid)
     QString groupname = info.group();
 
     //发送http查询cardID是否有效
-     QString postBody = makeCardidQueryBody(cardID, teamname, groupname);
+     QString postBody = makeCardidQueryBody(hex2dec(cardID), teamname, groupname);
      Http* pHttpFun = new Http();
      QString strUrl = dest_ip_and_port + "/user/makegroup";
      connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
@@ -188,12 +188,10 @@ void MainWindow::slot_makeCardQueryResult(bool success,const QString& strResult)
     {
         if( rslt == "success")
         {
-         // 讲键值对存储到QMap
-//            m_groupCache.insert(groupinfo.key(),groupinfo);
          // 发送制卡请求
             setTip("查询成功!正在制卡...");
             m_groupid = m_groupInfo.groupid();
-            sendTransferRequest(m_groupInfo.cardid(), m_groupInfo.cardsn(), m_groupInfo.teamid(), m_groupInfo.groupid());
+            sendTransferRequest(hex2dec(m_groupInfo.cardid()), m_groupInfo.cardsn(), m_groupInfo.teamid(), m_groupInfo.groupid());
         }
         else if( rslt == "failed")
         {
@@ -312,12 +310,20 @@ void MainWindow::slot_transferResult(bool success,const QString& strResult)
                 currentIndex = 0;
                 qDebug() <<"全部制卡完成！";
                 qDebug() <<"currentIndex = "<< currentIndex;
-                on_m_StopMarkCardBatchBtn_clicked();
-                int r = showQueryMessage("已全部制卡完毕！\n请设置导游！");
-                if(r == QMessageBox::Yes)
+                on_m_StopMakeCardBatchBtn_clicked();
+
+                //查询该组是否已经设置了导游
+                getGroupGuider(m_groupid);
+
+
+//                int r = showQueryMessage("已全部制卡完毕！\n请设置导游！");
+//                if(r == QMessageBox::Yes)
                 {
-                //查询空闲导游并设置队伍导游
-                    getGuider("idle");
+                    //查询该组是否已经设置了导游
+//                    getGroupGuider(m_groupInfo.groupid());
+
+                    //查询空闲导游并设置队伍导游
+//                    getGuider("idle");
                 }
 
                 //打印人员对照单
@@ -371,7 +377,7 @@ bool MainWindow::makeCardQueryResultParse(const QString& strResult, QString &rsl
                         QJsonValue value = obj.value("cardid");
                         if (value.isString())
                         {
-                            groupinfo.set_cardid(value.toString());
+                            groupinfo.set_cardid(dec2hex(value.toString()));
                             str = "ok";
                         }
                     }
@@ -452,7 +458,27 @@ bool MainWindow::makeCardQueryResultParse(const QString& strResult, QString &rsl
  *
 ************************************************/
 
-// 查询导游
+//查询已设置导游
+void MainWindow::getGroupGuider(QString groupid)
+{
+    QJsonObject obj;
+    obj.insert("groupid", groupid);
+    QJsonDocument document;
+    document.setObject(obj);
+    QString json(document.toJson(QJsonDocument::Compact));
+    QString postBody = json;
+
+    Http* pHttpFun = new Http();
+    QString strUrl = dest_ip_and_port+"/user/guider/get";
+    connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
+            this,SLOT(slot_getGroupGuiderResult(bool,const QString&)));
+    qDebug() <<"Send http: "<< strUrl;
+    postBody = m_et.httpPostGenerateSign(postBody);
+    qDebug() << "postBody:"<< postBody;
+    pHttpFun->post(strUrl,postBody);
+}
+
+// 查询空闲导游
 void MainWindow::getGuider(QString state)
 {
     QJsonObject obj;
@@ -472,7 +498,46 @@ void MainWindow::getGuider(QString state)
     pHttpFun->post(strUrl,postBody);
 }
 
-// 查询导游结果
+// 查询已设置导游结果
+void MainWindow::slot_getGroupGuiderResult(bool success, const QString& strResult)
+{
+    qDebug() << "slot_getGroupGuiderResult:"<<strResult;
+    if( !success )
+    {
+        setTip("请求失败！"+strResult);
+        showErrorMessage("请求失败！\n"+strResult);
+        return;
+    }
+    QString rslt, reason;
+    QStringList guiderList;
+    if(getGuiderResultParse(strResult, rslt, reason, guiderList))
+    {
+        if(rslt == "success")
+        {
+            //若未设置导游
+            if(guiderList.isEmpty())
+            {
+                //查询空闲导游并设置
+                getGuider("idle");
+
+            }
+            //若已设置导游
+            else
+            {
+                setGuider(m_groupid, guiderList[0]);
+            }
+        }
+        else if(rslt == "failed")
+        {
+            setTip("导游信息查询失败！"+reason);
+            showErrorMessage("导游信息查询失败！\n"+reason);
+        }
+
+    }
+}
+
+
+// 查询空闲导游结果
 void MainWindow::slot_getGuiderResult(bool success, const QString& strResult)
 {
     qDebug() << "slot_getGuiderResult:"<<strResult;
@@ -491,8 +556,6 @@ void MainWindow::slot_getGuiderResult(bool success, const QString& strResult)
             if(guiderList.isEmpty())
             {
                 showErrorMessage("没有可用的导游！");
-                //打印
-//                on_m_makeCardEndPrintBtn_clicked();
                 return;
             }
 
@@ -505,11 +568,6 @@ void MainWindow::slot_getGuiderResult(bool success, const QString& strResult)
                 //设置导游信息
                 m_guider = dlg.guider();
                 setGuider(m_groupid, m_guider);
-            }
-            else
-            {
-                //打印
-//                on_m_makeCardEndPrintBtn_clicked();
             }
 
         }
@@ -791,7 +849,7 @@ void MainWindow::realPrint(QString teamname, QString groupname, QString leader, 
     QFont font_teamname(QFont("隶书", 14));
     QFont font_groupname(QFont("隶书", 14));
     QFont font_leader(QFont("隶书", 14));
-    QFont font_info(QFont("楷书", 12));
+    QFont font_info(QFont("楷书", 14));
 
     //开始排版
     QTextEdit* edit = new QTextEdit;

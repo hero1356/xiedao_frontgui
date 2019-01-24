@@ -2,6 +2,7 @@
 #include <QAxObject>
 #include <QDir>
 #include <QFileDialog>
+#include <QDateTime>
 #include <QDebug>
 
 ReadPersonInfo::ReadPersonInfo(QObject *parent) : QObject(parent)
@@ -42,7 +43,7 @@ QString ReadPersonInfo::showFileDialog(QString title)
 
 QString ReadPersonInfo::getData()
 {
-    QString ret;
+    QString ret = "false";
 
     QString excel_file_path = showFileDialog("打开文件");
     if(excel_file_path == "") return "";
@@ -58,7 +59,7 @@ QString ReadPersonInfo::getData()
     QAxObject *usedRange = worksheet->querySubObject("UsedRange");
     if(NULL == usedRange || usedRange->isNull())
     {
-        return false;
+        return ret;
     }
     QVariant var = usedRange->dynamicCall("Value");//这里是所有的内容
     workbook->dynamicCall( "Close(Boolean)", false );
@@ -85,9 +86,15 @@ bool ReadPersonInfo::parse(QVariant var, QList<PersonInfo>& list)
         QString age = temp.at(1).toString();
         QString phoneNum = temp.at(2).toString();
         QString id  = temp.at(3).toString();
-        QString playTime = temp.at(4).toString();
+        QString playTime_1= temp.at(4).toString();
         QString workUnit = temp.at(5).toString();
         QString groupNum = temp.at(6).toString();
+
+        if( name == "" || name.isEmpty() || name.isNull())
+            continue;
+
+        QDateTime dt = QDateTime::fromString(playTime_1, "yyyy-MM-ddThh:mm:ss");
+        QString playTime = dt.toString("yyyy-MM-dd");
 
         PersonInfo info(name,age,phoneNum,id,playTime,workUnit,groupNum);
 

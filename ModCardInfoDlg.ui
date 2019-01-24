@@ -7,17 +7,18 @@
     <x>0</x>
     <y>0</y>
     <width>425</width>
-    <height>249</height>
+    <height>269</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>修改</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">#ModCardInfoDlg { background-color:
-qlineargradient(spread:reflect, x1:0.5, y1:0, x2:0, y2:0,
-stop:0 rgba(91, 204, 233, 100), stop:1 rgba(32, 80, 96,
-100)); }
+   <string notr="true">#ModCardInfoDlg 
+{
+	background:  rgba(32, 80, 96, 100);
+	border-image: url(:/images/images/userinput_bg.png);
+}
 
 #mainForm { background-color:rgba(0, 0, 0, 80); }
 
@@ -47,7 +48,9 @@ color: balck;
 min-width: 200px;
 min-height: 30px;
 font-size: 20px;
-}</string>
+}
+#infoLbl
+{ font-size: 40px; min-height: 60px;}</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="2" column="1">
@@ -103,7 +106,7 @@ font-size: 20px;
     </spacer>
    </item>
    <item row="1" column="1">
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="infoLbl">
      <property name="text">
       <string>修改卡片信息</string>
      </property>
@@ -157,10 +160,13 @@ font-size: 20px;
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Fixed</enum>
+     </property>
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>40</height>
+       <height>10</height>
       </size>
      </property>
     </spacer>

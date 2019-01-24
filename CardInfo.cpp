@@ -1,14 +1,13 @@
 #include "CardInfo.h"
 
-CardInfo::CardInfo(QObject *parent) : QObject(parent)
+CardInfo::CardInfo()
 {
     m_cardID = "NULL";
     m_cardSN = "NULL";
 }
 
-CardInfo::CardInfo(QString cardid, QString cardsn, QObject *parent )
+CardInfo::CardInfo(QString cardid, QString cardsn )
 {
-    parent = parent;
     m_cardID = cardid;
     m_cardSN = cardsn;
 }

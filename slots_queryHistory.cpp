@@ -343,8 +343,14 @@ void MainWindow::onHistoryScoreClicked()
      HistoryInfo info = m_historyInfoModel.getItem(index.row());
 
      QString scorejson = info.scorejson();
-     QString current_data = info.scoretime();
+
+     QString current_data_time = info.scoretime();
+
+     QDateTime temp = QDateTime::fromString(current_data_time, "yyyy-MM-dd hh:mm:ss");
+
+     QString current_data = temp.toString("yyyy年MM月dd日");
 
      ShowTravlerScoreDlg showScore(scorejson, current_data);
+
      showScore.exec();
 }

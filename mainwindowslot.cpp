@@ -223,11 +223,16 @@ void MainWindow::read_SerialPort()
     cardid <<= 8;
     cardid |= (unsigned char)temp.at(7);
 
-    ui->m_cardIDInputEdit->setText(QString::number(cardid));
-    ui->m_queryInfoEdit2->setText(QString::number(cardid));
+    QString s_cardid = QString::number(cardid, 10);
+    s_cardid = dec2hex(s_cardid);
 
-    setTip("当前卡号："+QString::number(cardid,10));
-    emit signal_sendCardID(cardid);
+    ui->m_cardIDInputEdit->setText(s_cardid);
+    ui->m_queryInfoEdit2->setText(s_cardid);
+
+    setTip("当前卡号："+s_cardid);
+    qDebug() << "cardid = "<< cardid;
+    emit signal_sendCardID(s_cardid);
+
 }
 
 /***********************************************
@@ -286,4 +291,35 @@ bool MainWindow::jsonParse(const QString& strResult, QString& rslt, QString& rea
     qDebug() <<"Json Parse Result: "<< str;
     return ret;
 }
+QString MainWindow::dec2hex(QString src)
+{
+    QString ret = "0";
+    bool ok;
 
+    int temp = src.toInt(&ok, 10);
+    if( ok )
+    {
+        ret += QString::number(temp, 16);
+    }
+
+
+    return ret.toUpper();
+}
+
+QString MainWindow::hex2dec(QString src)
+{
+    QString ret;
+    bool ok;
+
+    int temp = src.toInt(&ok, 16);
+    if( ok )
+    {
+        ret = QString::number(temp, 10);
+    }
+    else
+    {
+        ret = "";
+    }
+
+    return ret;
+}

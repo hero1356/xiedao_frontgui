@@ -31,7 +31,6 @@
 #include "ShowTravlerScoreDlg.h"
 #include "UserInputDlg.h"
 #include "HistoryInfoModel.h"
-#include "LoginDlg.h"
 #include "EncryptionTransmission.h"
 #include "ModGroupInfoDlg.h"
 #include "ModPersonInfoDlg.h"
@@ -43,8 +42,6 @@
 #define index_cardManage  3
 #define index_history  4
 
-#define ENCRYPTION_TRANSMISSION 1
-
 namespace Ui {
 class MainWindow;
 }
@@ -53,8 +50,6 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
-    LoginDlg login;
 
     QMap<QString, GroupInfo> m_groupCache;
     int currentIndex;
@@ -81,6 +76,8 @@ class MainWindow : public QMainWindow
     QString m_modCardID;
     QString m_modCardSN;
     int m_modRow;
+    QString dec2hex(QString src);
+    QString hex2dec(QString src);
 
  // personInfo 相关
     PersonInfoModel m_personInfoModel;
@@ -97,6 +94,7 @@ class MainWindow : public QMainWindow
 
     QString makeCardidQueryBody(QString cardid, QString teamname, QString groupname);
     void setCaptain(QString account, QString leadername, QString teamid);
+    void getGroupGuider(QString groupid);
     void getGuider(QString state);
     void setGuider(QString groupid, QString guider);
 
@@ -130,7 +128,7 @@ class MainWindow : public QMainWindow
     QString scoreParse(QString Json);
 
 // 对话框指针
-    QSharedPointer<OpenSerialDlg> m_pOpenSerialDlg;
+//    QSharedPointer<OpenSerialDlg> m_pOpenSerialDlg;
 
  // 状态栏信息
     QLabel m_operatInfoLbl; //当前操作状态
@@ -196,8 +194,8 @@ private slots:
     void on_m_importOrderCancelBtn_clicked();
     void on_m_makeCardBtn_clicked();
     void on_m_unsettledOrderQueryBtn_clicked();
-    void on_m_beginMarkCardBatchBtn_clicked();
-    void on_m_StopMarkCardBatchBtn_clicked();
+    void on_m_beginMakeCardBatchBtn_clicked();
+    void on_m_StopMakeCardBatchBtn_clicked();
     void on_m_makeCardEndPrintBtn_clicked();
     void on_m_unsettledOrderQueryAllBtn_clicked();
     void on_m_unsettledOrderQuerySectionBtn_clicked();
@@ -247,12 +245,13 @@ protected slots:
     void slot_transferResult(bool success,const QString& strResult);
     void sendTransferRequest(QString cardid, QString cardsn, QString teamid, QString groupid);
 
-    void slot_startMakeCard(unsigned int cardid);
+    void slot_startMakeCard(QString cardid);
     void tipTimerOut();
 
     void slot_setCaptainResult(bool success, const QString& strResult);
     void slot_setGuiderResult(bool success, const QString& strResult);
     void slot_getGuiderResult(bool success, const QString& strResult);
+    void slot_getGroupGuiderResult(bool success, const QString& strResult);
 
     void onListWidgetClicked(QListWidgetItem* item);
 
@@ -289,7 +288,7 @@ private:
 protected:
     void keyPressEvent(QKeyEvent *event);
 signals:
-    void signal_sendCardID(unsigned int cardID);
+    void signal_sendCardID(QString cardID);
     void signal_setGuider(bool success);
 };
 

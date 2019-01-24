@@ -73,10 +73,13 @@ padding-top:5px;
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Fixed</enum>
+     </property>
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>27</height>
+       <height>10</height>
       </size>
      </property>
     </spacer>
@@ -233,6 +236,14 @@ padding-top:5px;
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>usernameEdit</tabstop>
+  <tabstop>ageEdit</tabstop>
+  <tabstop>telephoneEdit</tabstop>
+  <tabstop>cardidEdit</tabstop>
+  <tabstop>ok</tabstop>
+  <tabstop>cancel</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

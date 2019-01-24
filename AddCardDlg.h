@@ -6,7 +6,6 @@
 #include "AppConfig.h"
 #include "EncryptionTransmission.h"
 
-#define ENCRYPTION_TRANSMISSION 1
 
 namespace Ui {
 class AddCardDlg;
@@ -34,12 +33,14 @@ public:
     void postProcess();
     void showErrorMessage(QString message);
     void showInformationMessage(QString message);
+    QString hex2dec(QString src);
+    QString dec2hex(QString src);
 signals:
     void signal_addCardSuccessed(QString cardID, QString cardSN);
 protected slots:
     void on_OkBtn_clicked();
     QString slot_cardAddResult(bool success,const QString& strResult);
-    void slot_receCardID(unsigned int cardID);
+    void slot_receCardID(QString cardID);
 };
 
 #endif // ADDCARDDLG_H

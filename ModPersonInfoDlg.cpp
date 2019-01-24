@@ -28,9 +28,9 @@ void ModPersonInfoDlg::on_cancel_clicked()
     done(Rejected);
 }
 
-void ModPersonInfoDlg::slot_cardid(uint cardid)
+void ModPersonInfoDlg::slot_cardid(QString cardid)
 {
-    ui->cardidEdit->setText(QString::number(cardid,10));
+    ui->cardidEdit->setText(cardid);
 
     if(cardid != old_cardid)
         m_ismodcard = "yes";
@@ -84,7 +84,3 @@ QString ModPersonInfoDlg::ismodcard()
     return m_ismodcard;
 }
 
-void ModPersonInfoDlg::on_cardidEdit_textChanged(const QString &cardid)
-{
-
-}

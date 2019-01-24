@@ -9,7 +9,7 @@
 
 
 MainWindow::MainWindow(QString name, QString pwd, QWidget *parent) : QMainWindow(parent),
-    ui(new Ui::MainWindow), m_pOpenSerialDlg(new OpenSerialDlg)
+    ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
@@ -50,7 +50,7 @@ void MainWindow::sysInit()
     m_isSerialPortConnected = false;
     currentIndex = 0;
     m_isStartMarkCard = false;
-    ui->m_StopMarkCardBatchBtn->setVisible(false);
+    ui->m_StopMakeCardBatchBtn->setVisible(false);
 
     //设置ui上日期栏
     QDate date = QDate::currentDate();

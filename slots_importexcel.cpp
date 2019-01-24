@@ -32,8 +32,11 @@ void MainWindow::on_m_openExcelBtn_clicked()
     clearPersonInfoModel();
     ReadPersonInfo read;
     QString path = read.getData();
-    m_personInfoModel.add(read.fetchData());
-    ui->m_excelPathEdit->setText(path);
+    if(path != "false")
+    {
+        m_personInfoModel.add(read.fetchData());
+        ui->m_excelPathEdit->setText(path);
+    }
 }
 
 //button slot: cancel import

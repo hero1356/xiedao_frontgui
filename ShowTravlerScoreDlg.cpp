@@ -42,18 +42,6 @@ void ShowTravlerScoreDlg::paiban(score_info_st score_info, QString current_data)
     QFont font_addition(QFont("隶书", 20));
     QFont font_encourage(QFont("隶书", 20));
 
-    //生成固定内容
-//    QString current_date =QDateTime::currentDateTime().toString("yyyy年MM月dd日");
-//    QString p_name =  QString("%1同学，恭喜您于%2完成了公共安全体验，成绩如下：").arg(score_info.name).arg(current_date);
-////    QString p_score = QString("学分点：%1分   绩点： %2分  总分：%3分").arg(score_info.credit_point).arg(score_info.grade_point).arg(score_info.finalscore);
-//    QString p_score = QString("总分：%1分").arg(score_info.finalscore);
-//    QString p_items = QString("您此次未参与学习体验的项目有：");
-
-//    score_info.finalscore = "93";
-//    score_info.score_class = "优秀";
-//    score_info.suggestion = "太棒了，不要骄傲哦！";
-
-
     QString p_name =  QString("%1同学：").arg(score_info.name);
     QString p_score = QString("    恭喜您于%1完成了公共安全体验，总分：%2分，成绩%3，%4").arg(current_data).arg(score_info.finalscore).arg(score_info.score_class).arg(score_info.suggestion);
     QString p_items = QString("    您此次未体验的项目有：");

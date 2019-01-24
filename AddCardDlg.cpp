@@ -91,7 +91,7 @@ void AddCardDlg::on_OkBtn_clicked()
     QString cardSN = ui->cardSNEdit->text();
 
     Http* pHttpFun = new Http();
-    QString strUrl = dest_ip_and_port+"/card/add?cardid=" + cardID + "&cardsn=" + cardSN;
+    QString strUrl = dest_ip_and_port+"/card/add?cardid=" + hex2dec(cardID) + "&cardsn=" + cardSN;
     strUrl = m_et.httpGetGenerateSign(strUrl);
     connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
             this,SLOT(slot_cardAddResult(bool,const QString&)));
@@ -156,8 +156,41 @@ QString AddCardDlg::slot_cardAddResult(bool success, const QString &strResult)
     return ret;
 }
 
-void AddCardDlg::slot_receCardID(unsigned int cardID)
+void AddCardDlg::slot_receCardID(QString cardID)
 {
-    ui->cardIDEdit->setText(QString::number(cardID));
+    ui->cardIDEdit->setText(cardID);
+}
+QString AddCardDlg::dec2hex(QString src)
+{
+    QString ret;
+    bool ok;
+
+    int temp = src.toInt(&ok, 10);
+    if( ok )
+    {
+        ret = QString::number(temp, 16);
+    }
+    else
+    {
+        ret = "";
+    }
+    return ret;
 }
 
+QString AddCardDlg::hex2dec(QString src)
+{
+    QString ret;
+    bool ok;
+
+    int temp = src.toInt(&ok, 16);
+    if( ok )
+    {
+        ret = QString::number(temp, 10);
+    }
+    else
+    {
+        ret = "";
+    }
+
+    return ret;
+}

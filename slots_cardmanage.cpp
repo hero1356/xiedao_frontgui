@@ -64,7 +64,7 @@ void MainWindow::on_m_cardIDQueryBtn_clicked()
     else
     {
         Http* pHttpFun = new Http();
-        QString strUrl = dest_ip_and_port+"/card/get?cardid="+cardID;
+        QString strUrl = dest_ip_and_port+"/card/get?cardid="+hex2dec(cardID);
         strUrl = m_et.httpGetGenerateSign(strUrl);
         connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
                 this,SLOT(slot_cardGetResult(bool,const QString&)));
@@ -78,7 +78,7 @@ void MainWindow::on_m_cardAddBtn_clicked()
 {
     AddCardDlg dlg(currentOperator, userPwd);
     connect(&dlg,SIGNAL(signal_addCardSuccessed(QString,QString)),this,SLOT(slot_cardAddSuccessed(QString,QString)));
-    connect(this,SIGNAL(signal_sendCardID(uint)),&dlg,SLOT(slot_receCardID(uint)));
+    connect(this,SIGNAL(signal_sendCardID(QString)),&dlg,SLOT(slot_receCardID(QString)));
     dlg.exec();
 }
 
@@ -104,17 +104,17 @@ void MainWindow::onCardInfoMenuEditClicked()
 
     QString strUrl;
     // 根据SN修改ID
-    if(ret.length() == 6)
+    if(ret.length() > 4)
     {
         QString newCardID;
 
         ModCardInfoDlg dlg;
         dlg.setCardSN(info.cardSN());
-        connect(this,SIGNAL(signal_sendCardID(uint)), &dlg, SLOT(slot_receiveCardID(uint)));
+        connect(this,SIGNAL(signal_sendCardID(QString)), &dlg, SLOT(slot_receiveCardID(QString)));
         if( dlg.exec() == QDialog::Accepted )
         {
             newCardID = dlg.cardID();
-            strUrl = dest_ip_and_port+"/card/mod?direction=sn2id&cardid="+newCardID+"&cardsn="+info.cardSN();
+            strUrl = dest_ip_and_port+"/card/mod?direction=sn2id&cardid="+hex2dec(newCardID)+"&cardsn="+info.cardSN();
             strUrl = m_et.httpGetGenerateSign(strUrl);
             Http* pHttpFun = new Http();
             connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
@@ -138,7 +138,7 @@ void MainWindow::onCardInfoMenuEditClicked()
         {
             newCardSN = dlg.cardSN();            
             Http* pHttpFun = new Http();
-            strUrl = dest_ip_and_port+"/card/mod?direction=id2sn&cardid="+info.cardID()+"&cardsn="+newCardSN;
+            strUrl = dest_ip_and_port+"/card/mod?direction=id2sn&cardid="+hex2dec(info.cardID())+"&cardsn="+newCardSN;
             strUrl = m_et.httpGetGenerateSign(strUrl);
             connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
                     this,SLOT(slot_cardModResult(bool,const QString&)));
@@ -168,9 +168,9 @@ void MainWindow::onCardInfoMenuDeleteClicked()
     }
 
     QString strUrl;
-    if(ret.length() == 6)
+    if(ret.length() > 4)
     {
-        strUrl = dest_ip_and_port+"/card/del?cardid="+ret;
+        strUrl = dest_ip_and_port+"/card/del?cardid="+hex2dec(ret);
         strUrl = m_et.httpGetGenerateSign(strUrl);
     }
     else
@@ -285,7 +285,8 @@ void MainWindow::slot_cardGetResult(bool success, const QString &strResult)
                             QJsonObject dataObj = dataVal.toObject();
                             QString cardID = dataObj.value("cardid").toString();
                             QString cardSN = dataObj.value("cardsn").toString();
-                            CardInfo info(cardID, cardSN);
+
+                            CardInfo info(dec2hex(cardID), cardSN);
                             m_cardInfomodel.add(info);
                         }
                     }

@@ -19,7 +19,7 @@ public:
     explicit HistoryInfo(QObject *parent = nullptr);
     explicit HistoryInfo(QString username, QString telephone,
                          QString score,QString ordertime,QString scoretime,
-                         QString openoid, QString scorejson,QObject *parent = 0);
+                         QString openoid, QString scorejson);
     HistoryInfo(const HistoryInfo& obj);
     HistoryInfo& operator = (const HistoryInfo& obj);
 

@@ -38,8 +38,6 @@ QString EncryptionTransmission::httpGetGenerateSign(QString input)
     {
         QString MD5_in = m_userPwd;
 
-        qDebug() << "MD5_in:" << MD5_in;
-
         QString sign = generateSign(MD5_in);
 
         ret += QString("?keyid="+m_userName+"&sign="+sign);
@@ -47,8 +45,6 @@ QString EncryptionTransmission::httpGetGenerateSign(QString input)
     }else{
 
         QString MD5_in = QString(ret.mid(pos+1)+m_userPwd);
-
-        qDebug() << "MD5_in:" << MD5_in;
 
         QString sign = generateSign(MD5_in);
 
@@ -65,8 +61,6 @@ QString EncryptionTransmission::httpPostGenerateSign(QString input)
     QString ret = "{\"data\":"+input;
 
     QString MD5_in = input + m_userPwd;
-
-    qDebug() << "MD5_in:" << MD5_in;
 
     QString sign = generateSign(MD5_in);
 

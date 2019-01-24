@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>519</width>
-    <height>349</height>
+    <height>325</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -69,7 +69,7 @@ padding-top:5px;
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <spacer name="verticalSpacer_2">
+    <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
@@ -78,8 +78,8 @@ padding-top:5px;
      </property>
      <property name="sizeHint" stdset="0">
       <size>
-       <width>10</width>
-       <height>20</height>
+       <width>20</width>
+       <height>10</height>
       </size>
      </property>
     </spacer>
@@ -222,6 +222,12 @@ padding-top:5px;
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>old_teamname</tabstop>
+  <tabstop>old_groupname</tabstop>
+  <tabstop>ok</tabstop>
+  <tabstop>cancel</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

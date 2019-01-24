@@ -11,7 +11,7 @@ HistoryInfo::HistoryInfo(QObject *parent) : QObject(parent)
     m_scorejson = "";
 }
 
-HistoryInfo::HistoryInfo(QString username, QString telephone, QString score, QString ordertime, QString scoretime, QString openoid, QString scorejson, QObject *parent)
+HistoryInfo::HistoryInfo(QString username, QString telephone, QString score, QString ordertime, QString scoretime, QString openoid, QString scorejson)
 {
     m_username = username;
     m_telephone = telephone;

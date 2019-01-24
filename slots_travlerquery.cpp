@@ -131,7 +131,7 @@ void MainWindow::on_m_queryInfoBtn2_clicked()
 
     QJsonObject obj;
     obj.insert("condition", condition);
-    obj.insert("value", value);
+    obj.insert("value", hex2dec(value));
     QJsonDocument document;
     document.setObject(obj);
     QString json(document.toJson(QJsonDocument::Compact));
@@ -212,6 +212,9 @@ void MainWindow::makeTravlerInfoListWidget(QList<TravlerInfo> list)
 //右键菜单————退卡
 void MainWindow::onTravelerBackCardClicked()
 {
+    int r = showQueryMessage("您确定要退卡吗？");
+    if( r == QMessageBox::No )  return;
+
     //获取右键位置的 index
     QModelIndex index = ui->m_travlerInfoView->currentIndex();
 
@@ -226,7 +229,7 @@ void MainWindow::onTravelerBackCardClicked()
      TravlerInfo info(m_traverInfoModel.getItem(index.row()));
 
      Http* pHttpFun = new Http();
-     QString strUrl = dest_ip_and_port+"/user/backcard?cardid="+info.cardid()+"&comid=255";
+     QString strUrl = dest_ip_and_port+"/user/backcard?cardid="+hex2dec(info.cardid())+"&comid=255";
      strUrl = m_et.httpGetGenerateSign(strUrl);
      connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
              this,SLOT(slot_travelerBackCardResult(bool,const QString&)));
@@ -253,7 +256,7 @@ void MainWindow::onTravelerScoreClicked()
 
 
      Http* pHttpFun = new Http();
-     QString strUrl = dest_ip_and_port+"/user/score?cardid="+info.cardid()+"&comid=255";
+     QString strUrl = dest_ip_and_port+"/user/score?cardid="+hex2dec(info.cardid())+"&comid=255";
      strUrl = m_et.httpGetGenerateSign(strUrl);
      connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
              this,SLOT(slot_getTravelerScoreResult(bool,const QString&)));
@@ -528,7 +531,7 @@ void MainWindow::onTravelerPersonEditClicked()
     dlg.set_age(info.age());
     dlg.set_telephone(info.telephone());
     dlg.set_cardid(info.cardid());
-    connect(this, SIGNAL(signal_sendCardID(uint)), &dlg, SLOT(slot_cardid(uint)));
+    connect(this, SIGNAL(signal_sendCardID(QString)), &dlg, SLOT(slot_cardid(QString)));
     if( dlg.exec() == QDialog::Accepted )
     {
         QString username = dlg.username();
@@ -548,7 +551,7 @@ void MainWindow::onTravelerPersonEditClicked()
         obj.insert("username", username);
         obj.insert("age", age);
         obj.insert("telephone", telephone);
-        obj.insert("cardid", cardid);
+        obj.insert("cardid", hex2dec(cardid));
         obj.insert("ismodcard",ismodcard);
         obj.insert("oldcardid",info.cardid());
         QJsonDocument document;
@@ -663,7 +666,7 @@ bool MainWindow::travelerResultParse(const QString& strResult, QString& rslt, QS
                                         QJsonValue value = arrayObj.value("cardid");
                                         if(value.isString())
                                         {
-                                            info.set_cardid(value.toString());
+                                            info.set_cardid(dec2hex(value.toString()));
 
                                             str = "ok";
                                         }
@@ -799,7 +802,7 @@ void MainWindow::batBackCard(QList<TravlerInfo>& list)
         //获取所在行的信息
          TravlerInfo info = list[0];
          Http* pHttpFun = new Http();
-         QString strUrl = dest_ip_and_port+"/user/backcard?cardid="+info.cardid()+"&comid=255";
+         QString strUrl = dest_ip_and_port+"/user/backcard?cardid="+hex2dec(info.cardid())+"&comid=255";
          strUrl = m_et.httpGetGenerateSign(strUrl);
          connect(pHttpFun,SIGNAL(signal_requestFinished(bool,const QString&)), //http请求结束信号
                  this,SLOT(slot_travelerBackCardResult(bool,const QString&)));
@@ -865,7 +868,7 @@ void MainWindow::slot_travelerBackCardResult(bool success, const QString& strRes
                 //判断是否是string类型
                 if (value.isString())
                 {
-                    cardid = value.toString();
+                    cardid = dec2hex(value.toString());
                     str = "ok";
                 }
             }

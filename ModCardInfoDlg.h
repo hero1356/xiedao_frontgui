@@ -26,7 +26,7 @@ public:
 
 private slots:
     void on_okButton_clicked();
-    void slot_receiveCardID(unsigned int cardID);
+    void slot_receiveCardID(QString cardID);
 
 private:
     Ui::ModCardInfoDlg *ui;

@@ -33,7 +33,7 @@ void ModCardInfoDlg::on_okButton_clicked()
     done(Accepted);
 }
 
-void ModCardInfoDlg::slot_receiveCardID(unsigned int cardID)
+void ModCardInfoDlg::slot_receiveCardID(QString  cardID)
 {
-    ui->cardIDEdit->setText(QString::number(cardID));
+    ui->cardIDEdit->setText(cardID);
 }
